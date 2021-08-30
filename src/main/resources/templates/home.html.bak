@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+    <meta content="text/html" charset="UTF-8">
+    <title sec:authentication="name"></title>
+    <link rel="stylesheet" th:href ="@{css/bootstrap.min.css}">
+    <style type="text/css">
+        body{
+            padding-top: 50px;
+        }
+        .starter-template{
+            padding: 40px 15px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<nav class="navber navber-inverse navber-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navber-brand" href="#">Spring Security演示</a>
+        </div>
+        <div id="navbar" class="collapse navber-collapse">
+            <ul class="nav navber-nav">
+                <li><a th:href="@{/}">首页</a></li>
+                <ul/>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="starter-template">
+        <h1 th:text="${msg.title}"></h1>
+        <p class="bg-primary" th:text="${msg.content}"></p>
+        <div sec:authorize="hasRole('ROLE_ADMIN')">
+            <p class="bg-info" th:text="${msg.etraInfo}"></p>
+        </div>
+        <div sec:authorize="hasRole('ROLE_USER')">
+            <p class="bg-info">无更多信息显示</p>
+        </div>
+
+        <form name="from" th:action="@{/login}" method="post">
+            <input type="submit"  value="注销" class="btn btn-primary"/>
+        </form>
+    </div>
+
+</div>
+</body>
+</html>
