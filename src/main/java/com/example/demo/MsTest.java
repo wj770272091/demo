@@ -1,7 +1,7 @@
 package com.example.demo;
 
 import java.util.*;
-import java.util.concurrent.*;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -88,6 +88,21 @@ public class MsTest {
         return numbersCopy;
     }
 
+    public int[] corpFlightBookings(int[][] bookings, int n) {
+        int[] res = new int[n];
+        for (int[] book : bookings) {
+            res[book[0] - 1] += book[2];
+            if (book[1] < n) {
+                res[book[1]] -= book[2];
+            }
+        }
+
+        for (int j = 1; j < n; ++j) {
+            res[j] +=res[j-1] ;
+        }
+        return res;
+    }
+
     /**
      * 删除k个数的最小值
      */
@@ -153,7 +168,7 @@ class BlockingQueueExam {
 //            service.submit(new Consumer("Consumer" + i, blockingQueue));
 //        }
 //        service.shutdown();
-        ArrayList<String> arrayList=new ArrayList<String>();
+        ArrayList<String> arrayList = new ArrayList<String>();
 
         arrayList.add("风清扬");
         arrayList.add("李莫愁");
@@ -166,20 +181,20 @@ class BlockingQueueExam {
         arrayList.add("李莫愁");
         arrayList.add("风清扬");
 
-        StringBuffer regex=new StringBuffer("1");
-        ListIterator<String> lit=arrayList.listIterator();
-        while(lit.hasNext()){
-            String temp=lit.next();
-            Pattern p=Pattern.compile(temp);//这两句很关键！
+        StringBuffer regex = new StringBuffer("1");
+        ListIterator<String> lit = arrayList.listIterator();
+        while (lit.hasNext()) {
+            String temp = lit.next();
+            Pattern p = Pattern.compile(temp);//这两句很关键！
             System.out.println(regex.toString());
-            Matcher m=p.matcher(regex.toString());
-            if(m.find()){
+            Matcher m = p.matcher(regex.toString());
+            if (m.find()) {
                 lit.remove();
-            }else{
+            } else {
                 regex.append(temp);
             }
         }
-        for(int i=0;i<arrayList.size();i++){
+        for (int i = 0; i < arrayList.size(); i++) {
             System.out.println(arrayList.get(i));
 
         }
