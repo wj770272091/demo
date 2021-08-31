@@ -51,6 +51,7 @@ public class BucketTest {
         return sortedArray;
     }
 
+
     public static void main(String[] args) {
         double[] array=new double[]{4.12,6.421,0.0023,3.0,2.123,8.122,4.12,10.09};
         double[] sortArray = bucketSort(array);
