@@ -88,19 +88,119 @@ public class MsTest {
         return numbersCopy;
     }
 
-    public int[] corpFlightBookings(int[][] bookings, int n) {
-        int[] res = new int[n];
-        for (int[] book : bookings) {
-            res[book[0] - 1] += book[2];
-            if (book[1] < n) {
-                res[book[1]] -= book[2];
+    public static List<String> generateParenthesis(int n) {
+        List<String> list = new ArrayList<>();
+        generate(list, new StringBuilder(), 0, 0, n);
+        return list;
+    }
+
+    public int compareVersion(String version1, String version2) {
+        String[] str1 = version1.split(".");
+        String[] str2 = version2.split(".");
+        for (int i = 0; i < str1.length || i < str2.length; ++i) {
+            int x = 0, y = 0;
+            if (i < str1.length) {
+                x = Integer.parseInt(str1[i]);
+            }
+            if (i < str2.length) {
+                y = Integer.parseInt(str2[i]);
+            }
+            if (x < y) {
+                return 1;
+            }
+            if (x > y) {
+                return -1;
             }
         }
+        return 0;
+    }
 
-        for (int j = 1; j < n; ++j) {
-            res[j] +=res[j-1] ;
+    public int removeElement(int[] nums, int val) {
+        Arrays.sort(nums);
+        int count = 0;
+        for (int i = 0; i < nums.length; ++i) {
+            if (nums[i] == val) {
+                nums[i] = nums[nums.length - (1 + count)];
+                count++;
+            }
+
         }
-        return res;
+        return nums.length - count;
+    }
+
+    public int strStr(String haystack, String needle) {
+        if (needle == "") {
+            return 0;
+        }
+        int left = 0, right = needle.length();
+        while (right <= haystack.length()) {
+            if (haystack.substring(left, right).equals(needle)) {
+                return left;
+            }
+            left++;
+            right++;
+        }
+        return -1;
+    }
+
+    public int removeDuplicates(int[] nums) {
+        if (nums.length == 0) {
+            return 0;
+        }
+        int left = 1, right = 1;
+        while (right < nums.length) {
+            if (nums[right] != nums[right - 1]) {
+                nums[left] = nums[right];
+                ++left;
+            }
+            ++right;
+        }
+        return left;
+    }
+
+    public String longestCommonPrefix(String[] strs) {
+        StringBuilder str = new StringBuilder(strs[0]);
+        int length = str.length();
+        for (int i = 1; i < strs.length; ++i) {
+            if (length == 0 || strs[i].isEmpty()) {
+                return "";
+            }
+            int shortLength = 0;
+            if (strs[i].length() < length) {
+                shortLength = strs[i].length();
+            } else {
+                shortLength = length;
+            }
+            for (int j = 0; j < shortLength; ++j) {
+                if (strs[i].charAt(j) != str.charAt(j)) {
+                    str = str.delete(j, str.length());
+                    length = str.length();
+                    break;
+                }
+                if (j == strs[i].length() - 1) {
+                    str = str.delete(j + 1, str.length());
+                }
+            }
+
+        }
+        return str.toString();
+    }
+
+    public static void generate(List<String> list, StringBuilder str, int left, int right, int n) {
+        if (str.length() == 2 * n) {
+            list.add(str.toString());
+            return;
+        }
+        if (left < n) {
+            str.append('(');
+            generate(list, str, left + 1, right, n);
+            str.deleteCharAt(str.length() - 1);
+        }
+        if (right < left) {
+            str.append(')');
+            generate(list, str, left, right + 1, n);
+            str.deleteCharAt(str.length() - 1);
+        }
     }
 
     /**
@@ -135,23 +235,24 @@ public class MsTest {
     }
 
     public static void main(String[] args) {
-        StackQueue stackQueue = new StackQueue();
-        stackQueue.enQueue(1);
-        stackQueue.enQueue(2);
-        stackQueue.enQueue(3);
-        System.out.println(stackQueue.deQueue());
-        System.out.println(stackQueue.deQueue());
-        stackQueue.enQueue(4);
-        System.out.println(stackQueue.deQueue());
-        System.out.println(stackQueue.deQueue());
-        int[] numbers = {1, 2, 3, 4, 5};
-
-        BlockingQueue<Runnable> workQueue;
-        System.out.println(Arrays.toString(findNearestNumber(numbers)));
-        System.out.println(removeKDigits("1593212", 3));
-        System.out.println(removeKDigits("30200", 1));
-        System.out.println(removeKDigits("10", 2));
-        System.out.println(removeKDigits("541270936", 3));
+//        StackQueue stackQueue = new StackQueue();
+//        stackQueue.enQueue(1);
+//        stackQueue.enQueue(2);
+//        stackQueue.enQueue(3);
+//        System.out.println(stackQueue.deQueue());
+//        System.out.println(stackQueue.deQueue());
+//        stackQueue.enQueue(4);
+//        System.out.println(stackQueue.deQueue());
+//        System.out.println(stackQueue.deQueue());
+//        int[] numbers = {1, 2, 3, 4, 5};
+//
+//        BlockingQueue<Runnable> workQueue;
+//        System.out.println(Arrays.toString(findNearestNumber(numbers)));
+//        System.out.println(removeKDigits("1593212", 3));
+//        System.out.println(removeKDigits("30200", 1));
+//        System.out.println(removeKDigits("10", 2));
+//        System.out.println(removeKDigits("541270936", 3));
+        generateParenthesis(3);
     }
 
 
