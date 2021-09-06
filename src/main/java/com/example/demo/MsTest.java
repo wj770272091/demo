@@ -128,6 +128,46 @@ public class MsTest {
         return nums.length - count;
     }
 
+    public int[] smallestK(int[] arr, int k) {
+        int[] res = new int[k];
+        Arrays.sort(arr);
+        for (int i = 0; i < res.length; ++i) {
+            res[i] = arr[i];
+        }
+        return res;
+    }
+
+    public int search(int[] nums, int target) {
+
+        int left = 0;
+        int right = nums.length - 1;
+        while (left <= right) {
+            int mid = (left + right) / 2;
+            if (nums[mid] < target) {
+                left = mid + 1;
+            } else if (nums[mid] > target) {
+                right = mid - 1;
+            } else if (nums[mid] == target) {
+                return mid;
+            }
+        }
+        return -1;
+    }
+
+    public int lengthOfLastWord(String s) {
+        int length = 0;
+        for (int i = s.length() - 1; i >= 0; --i) {
+            char ch = s.charAt(i);
+            if (ch == ' ' && length == 0) {
+                continue;
+            } else if (ch == ' ' && length != 0) {
+                break;
+            }
+            length++;
+        }
+        return length;
+    }
+
     public int strStr(String haystack, String needle) {
         if (needle == "") {
             return 0;
