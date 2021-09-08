@@ -168,6 +168,57 @@ public class MsTest {
         return length;
     }
 
+    public int balancedStringSplit(String s) {
+        int count = 0;
+        int R = 0;
+        int L = 0;
+        for (int i = 0; i < s.length(); ++i) {
+            switch (s.charAt(i)) {
+                case 'R':
+                    R++;
+                    break;
+                case 'L':
+                    L++;
+                    break;
+                default:
+                    break;
+            }
+            if (R == L && R != 0) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public int[] twoSum(int[] numbers, int target) {
+        int[] res = new int[2];
+        int left = 0;
+        int right = numbers.length - 1;
+        while (left < right) {
+            int sum = numbers[left] + numbers[right];
+            if (sum < target) {
+                left++;
+            } else if (sum > target) {
+                right++;
+            } else {
+                res[0] = numbers[left];
+                res[1] = numbers[right];
+            }
+        }
+        return res;
+    }
+
+    public int titleToNumber(String columnTitle) {
+        int num = 0;
+        int ascii = 1;
+        for (int i = columnTitle.length() - 1; i >= 0; --i) {
+            int k = columnTitle.charAt(i) - 'A' + 1;
+            num += k * ascii;
+            ascii*=26;
+        }
+        return num;
+    }
+
     public int strStr(String haystack, String needle) {
         if (needle == "") {
             return 0;
