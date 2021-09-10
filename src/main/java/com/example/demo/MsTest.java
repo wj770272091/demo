@@ -208,13 +208,37 @@ public class MsTest {
         return res;
     }
 
+    public int trailingZeroes(int n) {
+        int res = 0;
+        int count = 5;
+        while (n > count) {
+            res += n / count;
+            count *= 5;
+        }
+        return res;
+    }
+
+    public int chalkReplacer(int[] chalk, int k) {
+        int res = 0;
+        int num = 0;
+        while (k >= 0) {
+            k -= chalk[num];
+            num++;
+            if (num>=chalk.length){
+                num=0;
+            }
+            res=num;
+        }
+        return res==0?chalk.length-1:res-1;
+    }
+
     public int titleToNumber(String columnTitle) {
         int num = 0;
         int ascii = 1;
         for (int i = columnTitle.length() - 1; i >= 0; --i) {
             int k = columnTitle.charAt(i) - 'A' + 1;
             num += k * ascii;
-            ascii*=26;
+            ascii *= 26;
         }
         return num;
     }
