@@ -224,12 +224,28 @@ public class MsTest {
         while (k >= 0) {
             k -= chalk[num];
             num++;
-            if (num>=chalk.length){
-                num=0;
+            if (num >= chalk.length) {
+                num = 0;
             }
-            res=num;
+            res = num;
         }
-        return res==0?chalk.length-1:res-1;
+        return res == 0 ? chalk.length - 1 : res - 1;
+    }
+
+    public int numberOfBoomerangs(int[][] points) {
+        int ans = 0;
+        for (int[] p : points) {
+            HashMap<Integer, Integer> map = new HashMap<>();
+            for (int[] q : points) {
+                int dist = (p[0] - q[0]) * (p[0] - q[0]) + (p[1] - q[1]) * (p[1] - q[1]);
+                map.put(dist, map.getOrDefault(dist, 0) + 1);
+            }
+            for (Map.Entry<Integer, Integer> m : map.entrySet()) {
+                int mm = m.getValue();
+                ans += mm * (mm - 1);
+            }
+        }
+        return ans;
     }
 
     public int titleToNumber(String columnTitle) {
