@@ -248,6 +248,25 @@ public class MsTest {
         return ans;
     }
 
+    public String findLongestWord(String s, List<String> dictionary) {
+        String res = "";
+        for (String str : dictionary) {
+            int i = 0, j = 0;
+            while (i < str.length() && j < s.length()) {
+                if (str.charAt(i) == s.charAt(j)) {
+                    i++;
+                }
+                j++;
+            }
+            if (i==str.length()){
+                if (str.length()>res.length()||(str.length()==res.length()&&str.compareTo(res)<0)){
+                    res=str;
+                }
+            }
+        }
+        return res;
+    }
+
     public int titleToNumber(String columnTitle) {
         int num = 0;
         int ascii = 1;
