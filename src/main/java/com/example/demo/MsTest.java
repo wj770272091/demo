@@ -258,13 +258,80 @@ public class MsTest {
                 }
                 j++;
             }
-            if (i==str.length()){
-                if (str.length()>res.length()||(str.length()==res.length()&&str.compareTo(res)<0)){
-                    res=str;
+            if (i == str.length()) {
+                if (str.length() > res.length() || (str.length() == res.length() && str.compareTo(res) < 0)) {
+                    res = str;
                 }
             }
         }
         return res;
+    }
+
+    public int hammingWeight(int n) {
+        int res = 0;
+        for (int i = 0; i < 32; ++i) {
+            if ((n & (1 >> i)) != 0) {
+                res++;
+            }
+        }
+        return res;
+    }
+
+    public int findPeakElement(int[] nums) {
+        HashMap<Integer, Integer> map = new HashMap();
+        for (int i = 0; i < nums.length; ++i) {
+            if (!map.containsKey(nums[i])) {
+
+                map.put(nums[i], i);
+            }
+        }
+        Arrays.sort(nums);
+        return map.get(nums[nums.length - 1]);
+    }
+
+    public boolean isHappy(int n) {
+        HashSet<Integer> set = new HashSet<>();
+        while (n != 1) {
+            int totalSum = 0;
+            while (n > 0) {
+                int d = n % 10;
+                n = n / 10;
+                totalSum += d * d;
+            }
+            n = totalSum;
+            if (!set.add(n)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public int countPrimes(int n) {
+        int[] pp = new int[n];
+        Arrays.fill(pp, 1);
+        int count = 0;
+        for (int i = 2; i < n; ++i) {
+            if (pp[i] == 1) {
+                count++;
+                if (i * i < n) {
+                    for (int j = i * i; j < n; j += i) {
+                        pp[j] = 0;
+                    }
+                }
+
+            }
+        }
+        return count;
+    }
+
+    public boolean isIsomorphic(String s, String t) {
+        for (int i = 0; i < s.length(); ++i) {
+            if (s.indexOf(s.charAt(i))!=t.indexOf(t.charAt(i))){
+                return false;
+            }
+
+        }
+        return true;
     }
 
     public int titleToNumber(String columnTitle) {
