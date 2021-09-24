@@ -1,5 +1,6 @@
 package com.example.demo;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -326,12 +327,248 @@ public class MsTest {
 
     public boolean isIsomorphic(String s, String t) {
         for (int i = 0; i < s.length(); ++i) {
-            if (s.indexOf(s.charAt(i))!=t.indexOf(t.charAt(i))){
+            if (s.indexOf(s.charAt(i)) != t.indexOf(t.charAt(i))) {
                 return false;
             }
 
         }
         return true;
+    }
+
+    public boolean containsNearbyDuplicate(int[] nums, int k) {
+
+        Set<Integer> set = new HashSet<>();
+        for (int i = 0; i < nums.length; ++i) {
+            if (set.contains(nums[i])) {
+                return true;
+            }
+            set.add(nums[i]);
+            if (set.size() > k) {
+                set.remove(nums[i - k]);
+            }
+        }
+        return false;
+    }
+
+    public List<String> summaryRanges(int[] nums) {
+        List<String> ret = new ArrayList<String>();
+        int i = 0;
+        int n = nums.length;
+        while (i < n) {
+            int low = i;
+            i++;
+            while (i < n && nums[i] == nums[i - 1] + 1) {
+                i++;
+            }
+            int high = i - 1;
+            StringBuffer temp = new StringBuffer(Integer.toString(nums[low]));
+            if (low < high) {
+                temp.append("->");
+                temp.append(Integer.toString(nums[high]));
+            }
+            ret.add(temp.toString());
+        }
+        return ret;
+    }
+
+    public class ListNode {
+        int val;
+        ListNode next;
+
+        ListNode() {
+        }
+
+        ListNode(int val) {
+            this.val = val;
+        }
+
+        ListNode(int val, ListNode next) {
+            this.val = val;
+            this.next = next;
+        }
+    }
+
+    public boolean isPalindrome(ListNode head) {
+        List<Integer> list = new ArrayList<>();
+        while (head != null) {
+            list.add(head.val);
+            head = head.next;
+        }
+        int left = 0;
+        int right = list.size() - 1;
+        while (left < right) {
+            if (list.get(left) != list.get(right)) {
+                return false;
+            }
+            left++;
+            right--;
+        }
+        return true;
+    }
+
+    public void deleteNode(ListNode node) {
+        node.val = node.next.val;
+        node.next = node.next.next;
+
+    }
+
+    public boolean canWinNim(int n) {
+        return n % 4 != 0;
+    }
+
+    public class TreeNode {
+        int val;
+        TreeNode left;
+        TreeNode right;
+
+        TreeNode() {
+        }
+
+        TreeNode(int val) {
+            this.val = val;
+        }
+
+        TreeNode(int val, TreeNode left, TreeNode right) {
+            this.val = val;
+            this.left = left;
+            this.right = right;
+        }
+    }
+
+    public List<String> binaryTreePaths(TreeNode root) {
+        List<String> paths = new ArrayList<>();
+        bl(root, "", paths);
+        return paths;
+    }
+
+    public void bl(TreeNode root, String path, List<String> paths) {
+        if (root == null) {
+            return;
+        }
+        StringBuffer str = new StringBuffer(path);
+        if (root.left == null && root.right == null) {
+            paths.add(path);
+        } else {
+            str.append(root.val);
+            str.append("->");
+            bl(root.left, str.toString(), paths);
+            bl(root.right, str.toString(), paths);
+        }
+    }
+
+    public int addDigits(int num) {
+        while (num > 10) {
+            int res = num % 10;
+            int res2 = num / 10;
+            num = res + res2;
+        }
+        return num;
+    }
+
+    public boolean isUgly(int n) {
+        if (n <= 0) {
+            return false;
+        }
+        int[] ff = new int[]{2, 3, 5};
+        for (int i = 0; i < ff.length; ++i) {
+            while (n % ff[i] == 0) {
+                n /= ff[i];
+            }
+        }
+        return n == 1;
+    }
+
+    public boolean isPowerOfThree(int n) {
+        if (n == 1 || n == 3) {
+            return true;
+        }
+        while (n > 0) {
+            if (n % 3 != 0) {
+                return false;
+            } else if (n / 3 == 3) {
+                return true;
+            }
+            n /= 3;
+        }
+        return false;
+    }
+
+    public int missingNumber(int[] nums) {
+        int length = nums.length;
+        Arrays.sort(nums);
+        for (int i = 0; i < length; ++i) {
+            if (nums[i] != i) {
+                return i;
+            }
+        }
+        return length;
+    }
+
+    boolean isBadVersion(int version) {
+        return false;
+    }
+
+    public int firstBadVersion(int n) {
+        int left = 1, right = n;
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+            if (!isBadVersion(mid)) {
+                left = mid + 1;
+            } else {
+                right = mid;
+            }
+        }
+        return left;
+    }
+
+    public int[] countBits(int n) {
+        int[] bits = new int[n + 1];
+        for (int i = 1; i < bits.length; ++i) {
+            bits[i] = bits[i & (i - 1)] + 1;
+        }
+        return bits;
+    }
+
+    public void moveZeroes(int[] nums) {
+        int length = nums.length, left = 0, right = 0;
+        while (right < length) {
+            if (nums[right] != 0) {
+                int num = nums[right];
+                nums[right] = nums[left];
+                nums[left] = num;
+                left++;
+            }
+            right++;
+        }
+    }
+
+    public int fib(int n) {
+        if (n < 2) {
+            return n;
+        }
+        int[] dp = new int[n + 1];
+        dp[0] = 0;
+        dp[1] = 1;
+        for (int i = 2; i < dp.length; ++i) {
+            dp[i] = dp[i - 1] + dp[i - 2];
+        }
+        return dp[n];
+    }
+
+    public int tribonacci(int n) {
+        if (n < 2) {
+            return n;
+        }else if (n==2){
+            return 1;
+        }
+        int[] dp=new int[n+1];
+        dp[0]=0;
+        dp[1]=1;
+        dp[2]=1;
+        for (int i=3;i<dp.length;++i){
+            dp[i]=dp[i-1]+dp[i-2]+dp[i-3];
+        }
+        return dp[n];
     }
 
     public int titleToNumber(String columnTitle) {
@@ -344,6 +581,8 @@ public class MsTest {
         }
         return num;
     }
+
+
 
     public int strStr(String haystack, String needle) {
         if (needle == "") {
