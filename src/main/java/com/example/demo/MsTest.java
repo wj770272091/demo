@@ -1,6 +1,5 @@
 package com.example.demo;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -558,15 +557,15 @@ public class MsTest {
     public int tribonacci(int n) {
         if (n < 2) {
             return n;
-        }else if (n==2){
+        } else if (n == 2) {
             return 1;
         }
-        int[] dp=new int[n+1];
-        dp[0]=0;
-        dp[1]=1;
-        dp[2]=1;
-        for (int i=3;i<dp.length;++i){
-            dp[i]=dp[i-1]+dp[i-2]+dp[i-3];
+        int[] dp = new int[n + 1];
+        dp[0] = 0;
+        dp[1] = 1;
+        dp[2] = 1;
+        for (int i = 3; i < dp.length; ++i) {
+            dp[i] = dp[i - 1] + dp[i - 2] + dp[i - 3];
         }
         return dp[n];
     }
@@ -582,7 +581,206 @@ public class MsTest {
         return num;
     }
 
+    class Node {
+        public int val;
+        public Node prev;
+        public Node next;
+        public Node child;
+    }
 
+    ;
+
+    public Node flatten(Node head) {
+        Node res = head;
+        dgFlatten(res, res.next);
+        return res;
+    }
+
+    public void dgFlatten(Node node, Node next) {
+        if (node == null) {
+            return;
+        }
+        if (node.child != null) {
+            node.next = node.child;
+            dgFlatten(node.next, next);
+        } else {
+            node = node.next;
+        }
+        dgFlatten(node, node.next);
+
+    }
+
+    public void reverseString(char[] s) {
+        int left = 0, right = s.length;
+        while (left < right) {
+            char next = s[right];
+            s[right] = s[left];
+            s[left] = next;
+            left++;
+            right--;
+        }
+    }
+
+    public String reverseVowels(String s) {
+        String yuan = "aeiouAEIOU";
+        char[] c = s.toCharArray();
+        int left = 0, right = c.length - 1;
+        while (left < right) {
+            while (left < c.length && yuan.indexOf(c[left]) < 0) {
+                left++;
+            }
+            while (right > 0 && yuan.indexOf(c[right]) < 0) {
+                right--;
+            }
+            if (left < right) {
+                Character next = c[left];
+                c[left] = c[right];
+                c[right] = next;
+                left++;
+                right--;
+            }
+        }
+        StringBuffer str = new StringBuffer();
+        for (Character cc : c) {
+            str.append(cc);
+        }
+        return str.toString();
+    }
+
+    public int getSum(int a, int b) {
+        while (b != 0) {
+            int car = (a & b) >> 1;
+            a = a ^ b;
+            b = car;
+        }
+        return a;
+    }
+
+    public int climbStairs(int n) {
+        if (n <= 1) {
+            return 1;
+        }
+        int[] dp = new int[n + 1];
+        dp[1] = 1;
+        dp[2] = 2;
+        for (int i = 3; i <= n; ++i) {
+            dp[i] = dp[i - 1] + dp[i - 2];
+        }
+        return dp[n];
+
+    }
+
+    public int minCostClimbingStairs(int[] cost) {
+        int length = cost.length;
+        int[] dp = new int[length + 1];
+        dp[0] = dp[1] = 0;
+        for (int i = 2; i <= length; ++i) {
+            dp[i] = Math.min((cost[i - 1] + dp[i - 1]), (cost[i - 2] + dp[i - 2]));
+        }
+        return dp[length];
+    }
+
+    public int rob(int[] nums) {
+        int length = nums.length;
+        if (nums == null || length == 0) {
+            return 0;
+        }
+        if (length == 1) {
+            return nums[length - 1];
+        }
+        int[] dp = new int[length];
+        dp[0] = nums[0];
+        dp[1] = Math.max(nums[0], nums[1]);
+        for (int i = 2; i < length; ++i) {
+            dp[i] = Math.max(dp[i - 1], nums[i] + dp[i - 2]);
+        }
+        return dp[length];
+    }
+
+    public int rob2(int[] nums) {
+        int length = nums.length;
+        if (nums == null || length == 0) {
+            return 0;
+        }
+        if (length == 1) {
+            return nums[0];
+        } else if (length == 2) {
+            return Math.max(nums[0], nums[1]);
+        }
+        return Math.max(ro(nums, 0, length - 2), ro(nums, 1, length - 1));
+    }
+
+    public int ro(int[] nums, int start, int end) {
+        int first = nums[start], second = Math.max(nums[start], nums[start + 1]);
+        for (int i = start + 2; i <= end; ++i) {
+            int temp = second;
+            second = Math.max(first + nums[i], second);
+            first = temp;
+        }
+        return second;
+    }
+
+    public int deleteAndEarn(int[] nums) {
+        int length = nums.length;
+        int maxVal = 0;
+        for (int num : nums) {
+            maxVal = Math.max(num, maxVal);
+        }
+        int[] sum = new int[maxVal + 1];
+        for (int num : nums) {
+            sum[num] += num;
+        }
+        return deleteEarn(sum);
+    }
+
+    public int deleteEarn(int[] nums) {
+        int first = nums[0], second = Math.max(nums[0], nums[1]);
+        for (int i = 2; i < nums.length; ++i) {
+            int temp = second;
+            second = Math.max(first + nums[i], second);
+            first = temp;
+        }
+        return second;
+    }
+
+    public boolean isSameTree(TreeNode p, TreeNode q) {
+        if (p == null && q == null) {
+            return true;
+        } else if (p == null || q == null) {
+            return false;
+        }
+        Queue<TreeNode> q1 = new LinkedList<>();
+        Queue<TreeNode> q2 = new LinkedList<>();
+        q1.offer(p);
+        q2.offer(q);
+        while (!q1.isEmpty() && !q2.isEmpty()) {
+            TreeNode node1 = q1.poll();
+            TreeNode node2 = q2.poll();
+            if (node1.val != node2.val) {
+                return false;
+            }
+            TreeNode node1L = node1.left, node2L = node2.left, node1R = node1.right, node2R = node2.right;
+            if (node1L == null ^ node2L == null) {
+                return false;
+            }
+            if (node2R == null ^ node1R == null) {
+                return false;
+            }
+            if (node1L!=null){
+                q1.offer(node1L);
+            }
+            if (node2L!=null){
+                q2.offer(node2L);
+            }
+            if (node1R!=null){
+                q1.offer(node1R);
+            }
+            if (node2R!=null){
+                q2.offer(node2R);
+            }
+        }
+        return q1.isEmpty()&&q2.isEmpty();
+    }
 
     public int strStr(String haystack, String needle) {
         if (needle == "") {
