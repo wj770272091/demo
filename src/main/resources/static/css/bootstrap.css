@@ -4508,8 +4508,8 @@ input[type="button"].btn-block {
   .card-deck .card {
     display: -ms-flexbox;
     display: flex;
-    -ms-flex: 1 0 0%;
-    flex: 1 0 0%;
+    -ms-flex: 1 0 0;
+    flex: 1 0 0;
     -ms-flex-direction: column;
     flex-direction: column;
     margin-right: 15px;
@@ -4535,8 +4535,8 @@ input[type="button"].btn-block {
     flex-flow: row wrap;
   }
   .card-group > .card {
-    -ms-flex: 1 0 0%;
-    flex: 1 0 0%;
+    -ms-flex: 1 0 0;
+    flex: 1 0 0;
     margin-bottom: 0;
   }
   .card-group > .card + .card {

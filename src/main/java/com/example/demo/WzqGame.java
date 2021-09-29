@@ -90,7 +90,7 @@ public class WzqGame {
     }
 
     interface Chesgoodsieces {
-        public void DownPieces(Graphics g, Point pt);
+        void DownPieces(Graphics g, Point pt);
     }
 
     class WhitePieces implements Chesgoodsieces {

@@ -136,13 +136,13 @@ final class HttpsProtocolSocketFactory implements ProtocolSocketFactory {
 
     @Override
     public Socket createSocket(String host, int port, InetAddress localAddress, int localPort)
-            throws IOException, UnknownHostException {
+            throws IOException {
         return getSSLSocketFactory().createSocket(host, port, localAddress, localPort);
     }
 
     @Override
     public Socket createSocket(String host, int port, InetAddress localAddress, int localPort,
-                               HttpConnectionParams params) throws IOException, UnknownHostException, ConnectTimeoutException {
+                               HttpConnectionParams params) throws IOException {
         if (params == null) {
             throw new IllegalArgumentException("Parameters may not be null");
         }
@@ -160,7 +160,7 @@ final class HttpsProtocolSocketFactory implements ProtocolSocketFactory {
     }
 
     @Override
-    public Socket createSocket(String host, int port) throws IOException, UnknownHostException {
+    public Socket createSocket(String host, int port) throws IOException {
         return getSSLSocketFactory().createSocket(host, port);
     }
 

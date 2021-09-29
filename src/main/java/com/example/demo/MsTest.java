@@ -363,7 +363,7 @@ public class MsTest {
             StringBuffer temp = new StringBuffer(Integer.toString(nums[low]));
             if (low < high) {
                 temp.append("->");
-                temp.append(Integer.toString(nums[high]));
+                temp.append(nums[high]);
             }
             ret.add(temp.toString());
         }
@@ -588,8 +588,6 @@ public class MsTest {
         public Node child;
     }
 
-    ;
-
     public Node flatten(Node head) {
         Node res = head;
         dgFlatten(res, res.next);
@@ -743,6 +741,202 @@ public class MsTest {
         return second;
     }
 
+    public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
+        List<List<Integer>> res = new ArrayList<>();
+        if (root == null) {
+            return res;
+        }
+        Queue<TreeNode> que = new LinkedList<>();
+        que.offer(root);
+        boolean count = true;
+        while (!que.isEmpty()) {
+            Deque<Integer> list = new LinkedList<>();
+            int size = que.size();
+            for (int i = 0; i < size; ++i) {
+                TreeNode node = que.poll();
+                if (count) {
+                    list.offerLast(node.val);
+                } else {
+                    list.offerFirst(node.val);
+                }
+                if (node.left != null) {
+                    que.offer(node.left);
+                }
+                if (node.right != null) {
+                    que.offer(node.right);
+                }
+            }
+            res.add(new LinkedList<>(list));
+            count = !count;
+        }
+        return res;
+    }
+
+    public int maxSubArray(int[] nums) {
+        int len = nums.length;
+        int max = nums[0];
+        int sum = nums[0];
+        for (int i = 0; i < len; ++i) {
+            if (sum < 0) {
+                sum = 0;
+            }
+            sum += nums[i];
+            max = Math.max(max, sum);
+        }
+        return sum;
+    }
+
+
+    public static int maxSubarraySumCircular(int[] A) {
+        int N = A.length;
+
+        int ans = A[0], cur = A[0];
+        for (int i = 1; i < N; ++i) {
+            cur = A[i] + Math.max(cur, 0);
+            ans = Math.max(ans, cur);
+        }
+
+        // ans is the answer for 1-interval subarrays.
+        // Now, let's consider all 2-interval subarrays.
+        // For each i, we want to know
+        // the maximum of sum(A[j:]) with j >= i+2
+
+        // rightsums[i] = A[i] + A[i+1] + ... + A[N-1]
+        int[] rightsums = new int[N];
+        rightsums[N - 1] = A[N - 1];
+        for (int i = N - 2; i >= 0; --i) {
+            rightsums[i] = rightsums[i + 1] + A[i];
+        }
+
+        // maxright[i] = max_{j >= i} rightsums[j]
+        int[] maxright = new int[N];
+        maxright[N - 1] = A[N - 1];
+        for (int i = N - 2; i >= 0; --i) {
+            maxright[i] = Math.max(maxright[i + 1], rightsums[i]);
+        }
+
+        int leftsum = 0;
+        for (int i = 0; i < N - 2; ++i) {
+            leftsum += A[i];
+            ans = Math.max(ans, leftsum + maxright[i + 2]);
+        }
+
+        return ans;
+    }
+
+    public int maxProduct(int[] nums) {
+        int len = nums.length;
+        int[] maxF = new int[len];
+        int[] minF = new int[len];
+        System.arraycopy(nums, 0, maxF, 0, len);
+        System.arraycopy(nums, 0, minF, 0, len);
+        for (int i = 1; i < len; ++i) {
+            maxF[i] = Math.max(maxF[i - 1] * nums[i], Math.max(nums[i], minF[i - 1] * nums[i]));
+            minF[i] = Math.min(minF[i - 1] * nums[i], Math.min(nums[i], maxF[i - 1] * nums[i]));
+        }
+        int ans = maxF[0];
+        for (int i = 1; i < len; ++i) {
+            ans = Math.max(ans, maxF[i]);
+        }
+        return ans;
+    }
+
+    public int getMaxLen(int[] nums) {
+        int length = nums.length;
+        int positive = nums[0] > 0 ? 1 : 0;
+        int negative = nums[0] < 0 ? 1 : 0;
+        int maxLength = positive;
+        for (int i = 1; i < length; i++) {
+            if (nums[i] > 0) {
+                positive++;
+                negative = negative > 0 ? negative + 1 : 0;
+            } else if (nums[i] < 0) {
+                int newPositive = negative > 0 ? negative + 1 : 0;
+                int newNegative = positive + 1;
+                positive = newPositive;
+                negative = newNegative;
+            } else {
+                positive = 0;
+                negative = 0;
+            }
+            maxLength = Math.max(maxLength, positive);
+        }
+        return maxLength;
+    }
+
+    public int maxProfit(int[] prices) {
+        int len = prices.length;
+        int[][] dp = new int[len][2];
+        dp[0][0] = 0;
+        dp[0][1] = -prices[0];
+        for (int i = 1; i < len; ++i) {
+            dp[i][0] = Math.max(dp[i - 1][1] + prices[i], dp[i - 1][0]);
+            dp[i][1] = Math.max(-prices[i], dp[i - 1][1]);
+        }
+        return dp[len - 1][0];
+    }
+
+    public int maxScoreSightseeingPair(int[] values) {
+        int len = values.length;
+        int max = values[0] + 0;
+        int df = 0;
+        for (int i = 1; i < len; ++i) {
+            df = Math.max(df, max + values[i] - i);
+            max = Math.max(max, values[i] + i);
+        }
+        return df;
+    }
+
+    public int[] intersection(int[] nums1, int[] nums2) {
+        Arrays.sort(nums1);
+        Arrays.sort(nums2);
+        int len1=nums1.length;
+        int len2=nums2.length;
+        int[] inster=new int[len1+len2];
+        int index=0,index1=0,index2=0;
+        while (index1<len1&&index2<len2){
+            int num1=nums1[index1],num2=nums2[index2];
+            if (num1==num2){
+                if (index==0||inster[index-1]!=num1){
+                    inster[index++]=num1;
+                }
+                index1++;
+                index2++;
+            }else if (num1<num2){
+                index1++;
+            }else {
+                index2++;
+            }
+        }
+        return Arrays.copyOfRange(inster, 0, index);
+    }
+
+    public int pathSum(TreeNode root, int targetSum) {
+        if (root == null) {
+            return 0;
+        }
+        int res = rootSum(root, targetSum);
+        res += pathSum(root.left, targetSum);
+        res += pathSum(root.right, targetSum);
+        return res;
+    }
+
+    public int rootSum(TreeNode root, int targetSum) {
+        int ret = 0;
+
+        if (root == null) {
+            return 0;
+        }
+        int val = root.val;
+        if (val == targetSum) {
+            ret++;
+        }
+
+        ret += rootSum(root.left, targetSum - val);
+        ret += rootSum(root.right, targetSum - val);
+        return ret;
+    }
+
     public boolean isSameTree(TreeNode p, TreeNode q) {
         if (p == null && q == null) {
             return true;
@@ -766,20 +960,20 @@ public class MsTest {
             if (node2R == null ^ node1R == null) {
                 return false;
             }
-            if (node1L!=null){
+            if (node1L != null) {
                 q1.offer(node1L);
             }
-            if (node2L!=null){
+            if (node2L != null) {
                 q2.offer(node2L);
             }
-            if (node1R!=null){
+            if (node1R != null) {
                 q1.offer(node1R);
             }
-            if (node2R!=null){
+            if (node2R != null) {
                 q2.offer(node2R);
             }
         }
-        return q1.isEmpty()&&q2.isEmpty();
+        return q1.isEmpty() && q2.isEmpty();
     }
 
     public int strStr(String haystack, String needle) {
@@ -865,7 +1059,7 @@ public class MsTest {
             boolean hasCut = false;
             for (int j = 0; j < num.length() - 1; j++) {
                 if (num.charAt(j) > num.charAt(j + 1)) {
-                    num = num.substring(0, j) + num.substring(j + 1, num.length());
+                    num = num.substring(0, j) + num.substring(j + 1);
                     hasCut = true;
                     break;
                 }
@@ -880,7 +1074,7 @@ public class MsTest {
                 }
                 start++;
             }
-            num = num.substring(start, num.length());
+            num = num.substring(start);
             if (num.length() == 0) {
                 return "0";
             }

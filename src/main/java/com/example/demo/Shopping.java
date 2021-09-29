@@ -42,9 +42,9 @@ public class Shopping {
 }
 
 interface Articles {
-    public float calculation();
+    float calculation();
 
-    public void show();
+    void show();
 }
 
 class Goods implements Articles {
