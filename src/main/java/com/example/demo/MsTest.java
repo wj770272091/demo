@@ -890,25 +890,72 @@ public class MsTest {
     public int[] intersection(int[] nums1, int[] nums2) {
         Arrays.sort(nums1);
         Arrays.sort(nums2);
-        int len1=nums1.length;
-        int len2=nums2.length;
-        int[] inster=new int[len1+len2];
-        int index=0,index1=0,index2=0;
-        while (index1<len1&&index2<len2){
-            int num1=nums1[index1],num2=nums2[index2];
-            if (num1==num2){
-                if (index==0||inster[index-1]!=num1){
-                    inster[index++]=num1;
+        int len1 = nums1.length;
+        int len2 = nums2.length;
+        int[] inster = new int[len1 + len2];
+        int index = 0, index1 = 0, index2 = 0;
+        while (index1 < len1 && index2 < len2) {
+            int num1 = nums1[index1], num2 = nums2[index2];
+            if (num1 == num2) {
+                if (index == 0 || inster[index - 1] != num1) {
+                    inster[index++] = num1;
                 }
                 index1++;
                 index2++;
-            }else if (num1<num2){
+            } else if (num1 < num2) {
                 index1++;
-            }else {
+            } else {
                 index2++;
             }
         }
         return Arrays.copyOfRange(inster, 0, index);
+    }
+
+    public int maxProfitL(int[] prices) {
+        int len = prices.length;
+        if (len == 0) {
+            return 0;
+        }
+        int[][] dp = new int[len][3];
+        dp[0][0] = -prices[0];
+        dp[0][1] = 0;
+        dp[0][2] = 0;
+        for (int i = 1; i < len; ++i) {
+            dp[i][0] = Math.max(dp[i - 1][2] - prices[i], dp[i - 1][0]);
+            dp[i][1] = dp[i - 1][0] + prices[i];
+            dp[i][2] = Math.max(dp[i - 1][1], dp[i - 1][2]);
+        }
+        return Math.max(dp[len - 1][1], dp[len - 1][2]);
+    }
+
+    public int maxProfit(int[] prices, int fee) {
+        int len = prices.length;
+        if (len == 0) {
+            return 0;
+        }
+        int[][] dp = new int[len][2];
+        dp[0][0] = -prices[0];
+        dp[0][1] = 0;
+        for (int i = 1; i < len; ++i) {
+            dp[i][0] = Math.max(dp[i - 1][0], dp[i - 1][1] - prices[i]);
+            dp[i][1] = Math.max(dp[i - 1][1], dp[i - 1][0] + prices[i] - fee);
+        }
+        return dp[len - 1][1];
+    }
+
+    public boolean wordBreak(String s, List<String> wordDict) {
+        Set<String> wordDictSet = new HashSet(wordDict);
+        boolean[] dp = new boolean[s.length() + 1];
+        dp[0] = true;
+        for (int i = 1; i <= s.length(); i++) {
+            for (int j = 0; j < i; j++) {
+                if (dp[j] && wordDictSet.contains(s.substring(j, i))) {
+                    dp[i] = true;
+                    break;
+                }
+            }
+        }
+        return dp[s.length()];
     }
 
     public int pathSum(TreeNode root, int targetSum) {
@@ -935,6 +982,35 @@ public class MsTest {
         ret += rootSum(root.left, targetSum - val);
         ret += rootSum(root.right, targetSum - val);
         return ret;
+    }
+
+    public int numberOfArithmeticSlices(int[] nums) {
+        int len = nums.length;
+        int count = 0;
+        int countNum = 0;
+        for (int i = 2; i < len; ++i) {
+            if (nums[i] - nums[i - 1] == nums[i - 1] - nums[i - 2]) {
+                count = ++countNum;
+            } else {
+                count = 0;
+            }
+        }
+        return count;
+    }
+
+    public int numDecodings(String s) {
+        int len = s.length();
+        int[] dp = new int[len + 1];
+        dp[0] = 1;
+        for (int i = 1; i <= len; ++i) {
+            if (s.charAt(i - 1) != '0') {
+                dp[i] += dp[i - 1];
+            }
+            if (i > 1 && s.charAt(i - 2) != '0' && ((s.charAt(i - 2) - '0') * 10 + (s.charAt(i - 1) - '0') <= 26)) {
+                dp[i] += dp[i - 2];
+            }
+        }
+        return dp[len];
     }
 
     public boolean isSameTree(TreeNode p, TreeNode q) {
