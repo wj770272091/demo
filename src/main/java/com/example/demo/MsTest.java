@@ -1013,6 +1013,132 @@ public class MsTest {
         return dp[len];
     }
 
+    public List<List<Integer>> generate(int numRows) {
+        List<List<Integer>> res = new ArrayList<>();
+        for (int i = 0; i < numRows; ++i) {
+            List<Integer> re = new ArrayList<>();
+            for (int j = 0; j <= i; ++j) {
+                if (j == 0 || j == i) {
+                    re.add(1);
+                } else {
+                    re.add(res.get(i - 1).get(j - 1) + res.get(i - 1).get(j));
+                }
+
+            }
+            res.add(re);
+        }
+        return res;
+    }
+
+    public List<Integer> getRow(int rowIndex) {
+        List<List<Integer>> res = new ArrayList<>();
+        for (int i = 0; i < rowIndex + 1; ++i) {
+            List<Integer> re = new ArrayList<>();
+            for (int j = 0; j <= i; ++j) {
+                if (j == 0 || j == i) {
+                    re.add(1);
+                } else {
+                    re.add(res.get(i - 1).get(j - 1) + res.get(i - 1).get(j));
+                }
+
+            }
+            res.add(re);
+        }
+        return res.get(rowIndex);
+    }
+
+    public int nthUglyNumber(int n) {
+        int[] dp = new int[n + 1];
+        dp[1] = 1;
+        int p1 = 1, p2 = 1, p3 = 1;
+        for (int i = 2; i <= n; ++i) {
+            int p12 = dp[p1] * 2;
+            int p23 = dp[p2] * 3;
+            int p35 = dp[p3] * 5;
+            dp[i] = Math.min(Math.min(p12, p23), p35);
+            if (dp[i] == p12) {
+                p1++;
+            }
+            if (dp[i] == p23) {
+                p2++;
+            }
+            if (dp[i] == p35) {
+                p3++;
+            }
+        }
+        return dp[n];
+    }
+
+    /**
+     * @USER: WangJie
+     * @DATE: 2021/10/8
+     * @TIME: 14:29
+     * 我们可以定义两个函数：
+     * <p>
+     * G(n): 长度为 n 的序列能构成的不同二叉搜索树的个数。
+     * <p>
+     * F(i, n): 以 i 为根、序列长度为 n 的不同二叉搜索树个数 (1≤i≤n)。
+     * G(n)=∑F(i,n) (1)
+     * F(i,n)=G(i−1)⋅G(n−i) (2)
+     * G(n)=∑G(i−1)⋅G(n−i) (3)
+     */
+    public int numTrees(int n) {
+        int[] G = new int[n + 1];
+        G[0] = 1;
+        G[1] = 1;
+        for (int i = 2; i <= n; ++i) {
+            for (int j = 1; j <= i; ++j) {
+                G[i] += G[j - 1] * G[i - j];
+            }
+        }
+        return G[n];
+    }
+
+    public int minFallingPathSum(int[][] matrix) {
+        int n = matrix.length;
+        for (int i = n - 2; i >= 0; --i) {
+            for (int j = 0; j < n; ++j) {
+                int best = matrix[i + 1][j];
+                if (j > 0) {
+                    best = Math.min(best, matrix[i + 1][j - 1]);
+                }
+                if (j < n) {
+                    best = Math.min(best, matrix[i + 1][j + 1]);
+                }
+                matrix[i][j] += best;
+            }
+        }
+        int res = Integer.MAX_VALUE;
+        for (int re : matrix[0]) {
+            res = Math.min(res, re);
+        }
+        return res;
+    }
+
+    public int minimumTotal(List<List<Integer>> triangle) {
+        int len = triangle.size();
+        int[][] dp = new int[len][len];
+        dp[0][0] = triangle.get(0).get(0);
+        for (int i = 1; i < len; ++i) {
+            List<Integer> list = triangle.get(i);
+            for (int j = 0; j < list.size(); ++j) {
+                if (j == 0) {
+                    dp[i][j] = dp[i - 1][j] + list.get(j);
+                } else if (j == list.size()-1) {
+                    dp[i][j] = dp[i - 1][j - 1] + list.get(j);
+                } else {
+                    dp[i][j] = Math.min(dp[i - 1][j - 1], dp[i - 1][j]) + list.get(j);
+                }
+
+            }
+        }
+        int res = Integer.MAX_VALUE;
+        for (int re : dp[len]) {
+            res = Math.min(re, res);
+        }
+        return res;
+    }
+
     public boolean isSameTree(TreeNode p, TreeNode q) {
         if (p == null && q == null) {
             return true;
