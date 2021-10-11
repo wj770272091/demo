@@ -1124,7 +1124,7 @@ public class MsTest {
             for (int j = 0; j < list.size(); ++j) {
                 if (j == 0) {
                     dp[i][j] = dp[i - 1][j] + list.get(j);
-                } else if (j == list.size()-1) {
+                } else if (j == list.size() - 1) {
                     dp[i][j] = dp[i - 1][j - 1] + list.get(j);
                 } else {
                     dp[i][j] = Math.min(dp[i - 1][j - 1], dp[i - 1][j]) + list.get(j);
@@ -1137,6 +1137,59 @@ public class MsTest {
             res = Math.min(re, res);
         }
         return res;
+    }
+
+    public boolean isSubsequence(String s, String t) {
+        if (s.isEmpty()) {
+            return true;
+        }
+        int left = 0;
+        for (int i = 0; i < t.length(); ++i) {
+            char zf = t.charAt(i);
+            if (zf == s.charAt(left)) {
+                left++;
+            }
+            if (left == s.length()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public int uniquePaths(int m, int n) {
+        int[][] dp = new int[m][n];
+        for (int i = 0; i < m; ++i) {
+            dp[i][0] = 1;
+        }
+        for (int j = 0; j < n; ++j) {
+            dp[0][j] = 1;
+        }
+        for (int i = 1; i < m; ++i) {
+            for (int j = 1; j < n; ++j) {
+                dp[i][j] = dp[i - 1][j] + dp[i][j - 1];
+            }
+        }
+        return dp[m - 1][n - 1];
+    }
+
+    public int uniquePathsWithObstacles(int[][] obstacleGrid) {
+        int n = obstacleGrid.length, m = obstacleGrid[0].length;
+        int[] f = new int[m];
+
+        f[0] = obstacleGrid[0][0] == 0 ? 1 : 0;
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < m; ++j) {
+                if (obstacleGrid[i][j] == 1) {
+                    f[j] = 0;
+                    continue;
+                }
+                if (j - 1 >= 0 && obstacleGrid[i][j - 1] == 0) {
+                    f[j] += f[j - 1];
+                }
+            }
+        }
+
+        return f[m - 1];
     }
 
     public boolean isSameTree(TreeNode p, TreeNode q) {
