@@ -1,7 +1,7 @@
 package com.example.demo;
 
 import java.util.*;
-import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -92,6 +92,25 @@ public class MsTest {
         List<String> list = new ArrayList<>();
         generate(list, new StringBuilder(), 0, 0, n);
         return list;
+    }
+
+    public int longestPalindromeSubseq(String s) {
+        int len = s.length();
+        int[][] dp = new int[len][len];
+        for (int i = len - 1; i >= 0; --i) {
+            dp[i][i] = 1;
+            char c1 = s.charAt(i);
+            for (int j = i + 1; j < len; ++j) {
+                char c2 = s.charAt(j);
+                if (c1 == c2) {
+                    dp[i][j] = dp[i + 1][j - 1] + 2;
+                } else {
+                    dp[i][j] = Math.max(dp[i][j - 1], dp[i + 1][j]);
+                }
+
+            }
+        }
+        return dp[0][len - 1];
     }
 
     public int compareVersion(String version1, String version2) {
@@ -786,6 +805,53 @@ public class MsTest {
         return sum;
     }
 
+    public List<String> fizzBuzz(int n) {
+        List<String> res = new ArrayList<>();
+
+        for (int i = 0; i < n; ++i) {
+            int count = i + 1;
+            String re = String.valueOf(count);
+            if (count % 3 == 0) {
+                re = "Fizz";
+            }
+            if (count % 5 == 0) {
+                if (re.equals("Fizz")) {
+                    re += "Buzz";
+                } else {
+                    re = "Buzz";
+                }
+            }
+
+            res.add(re);
+        }
+        return res;
+    }
+
+    public int coinChange(int[] coins, int amount) {
+        int max = amount + 1;
+        int[] dp = new int[amount + 1];
+        Arrays.fill(dp, max);
+        dp[0] = 0;
+        for (int i = 1; i <= amount; ++i) {
+            for (int j = 0; j < coins.length; ++j) {
+                if (coins[j] <= i) {
+                    dp[i] = Math.min(dp[i], dp[i - coins[j] + 1]);
+                }
+            }
+        }
+        return dp[amount] > amount ? -1 : dp[amount];
+    }
+
+    public int change(int amount, int[] coins) {
+        int[] dp = new int[amount + 1];
+        dp[0] = 1;
+        for (int coin : coins) {
+            for (int i = coin; i <= amount; ++i) {
+                dp[i] += dp[i - coin];
+            }
+        }
+        return dp[amount];
+    }
 
     public static int maxSubarraySumCircular(int[] A) {
         int N = A.length;
@@ -1188,8 +1254,75 @@ public class MsTest {
                 }
             }
         }
+        ExecutorService es = new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<Runnable>(10), Executors.defaultThreadFactory(),
+                new ThreadPoolExecutor.DiscardPolicy());
+        ExecutorService ee = Executors.newSingleThreadExecutor();
 
         return f[m - 1];
+    }
+
+    public int minPathSum(int[][] grid) {
+        int m = grid.length;
+        int n = grid[0].length;
+        if (grid == null || m == 0 || n == 0) {
+            return 0;
+        }
+
+        int[][] dp = new int[m][n];
+        dp[0][0] = grid[0][0];
+        for (int i = 1; i < m; ++i) {
+            dp[i][0] = dp[i - 1][0] + grid[i][0];
+        }
+        for (int j = 1; j < n; ++j) {
+            dp[0][j] = dp[0][j - 1] + grid[0][j];
+        }
+        for (int i = 1; i < m; ++i) {
+            for (int j = 1; j < n; ++j) {
+                dp[i][j] = Math.min(dp[i - 1][j], dp[i][j - 1]) + grid[i][j];
+            }
+        }
+        return dp[m - 1][n - 1];
+    }
+
+    public String longestPalindrome(String s) {
+
+        int len = s.length();
+        if (len < 2) {
+            return s;
+        }
+        boolean[][] re = new boolean[len][len];
+        for (int i = 0; i < len; ++i) {
+            re[i][i] = true;
+        }
+        int maxLen = 1;
+        int begin = 0;
+        char[] c = s.toCharArray();
+        for (int L = 2; L <= len; ++L) {
+            for (int i = 0; i < len; ++i) {
+                int j = L + i - 1;
+                if (j >= len) {
+                    break;
+                }
+                if (c[i] != c[j]) {
+                    re[i][j] = false;
+                } else {
+                    if (j - i < 3) {
+                        re[i][j] = true;
+                    } else {
+                        re[i][j] = re[i + 1][j - 1];
+                    }
+                }
+                if (re[i][j] && j - i + 1 > maxLen) {
+                    maxLen = j - i + 1;
+                    begin = i;
+                }
+
+            }
+        }
+
+        return s.substring(begin, begin + maxLen);
+
     }
 
     public boolean isSameTree(TreeNode p, TreeNode q) {
@@ -1457,5 +1590,7 @@ class Consumer implements Runnable {
             e.printStackTrace();
         }
     }
+
+
 }
 
