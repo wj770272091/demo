@@ -173,6 +173,50 @@ public class MsTest {
         return -1;
     }
 
+    public int tribonacci(int n) {
+        if (n == 0) {
+            return 0;
+        } else if (n < 3) {
+            return 1;
+        }
+        int[] dp = new int[n + 1];
+        dp[0] = 0;
+        dp[1] = 1;
+        dp[2] = 1;
+        for (int i = 3; i <= n; ++i) {
+            dp[i] = dp[i - 1] + dp[i - 2] + dp[i - 3];
+        }
+        return dp[n];
+    }
+
+    public String countAndSay(int n) {
+        String re = "1";
+        for (int i = 2; i <= n; ++i) {
+            StringBuilder sb = new StringBuilder();
+            int start = 0;
+            int pos = 0;
+            while (pos < re.length()) {
+                while (pos < re.length() && re.charAt(start) == re.charAt(pos)) {
+                    pos++;
+                }
+                sb.append(Integer.valueOf(pos - start)).append(re.charAt(start));
+                start = pos;
+            }
+            re = sb.toString();
+        }
+        return re;
+    }
+
+    public int peakIndexInMountainArray(int[] arr) {
+        for (int i = 0; i < arr.length; ++i) {
+            if (arr[i + 1] < arr[i]) {
+                return i;
+            }
+        }
+        return 0;
+    }
+
+
     public int lengthOfLastWord(String s) {
         int length = 0;
         for (int i = s.length() - 1; i >= 0; --i) {
@@ -573,21 +617,6 @@ public class MsTest {
         return dp[n];
     }
 
-    public int tribonacci(int n) {
-        if (n < 2) {
-            return n;
-        } else if (n == 2) {
-            return 1;
-        }
-        int[] dp = new int[n + 1];
-        dp[0] = 0;
-        dp[1] = 1;
-        dp[2] = 1;
-        for (int i = 3; i < dp.length; ++i) {
-            dp[i] = dp[i - 1] + dp[i - 2] + dp[i - 3];
-        }
-        return dp[n];
-    }
 
     public int titleToNumber(String columnTitle) {
         int num = 0;
