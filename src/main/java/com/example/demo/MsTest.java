@@ -231,6 +231,103 @@ public class MsTest {
         return length;
     }
 
+    /**
+     * @USER: WangJie
+     * @DATE: 2021/10/18
+     * @TIME: 9:29
+     * 给你一个 正 整数 num ，输出它的补数。补数是对该数的二进制表示取反。
+     */
+    public int findComplement(int num) {
+        int s = -1;
+        for (int i = 31; i >= 0; i--) {
+            if (((num >> i) & 1) != 0) {
+                s = i;
+                break;
+            }
+        }
+        int ans = 0;
+        for (int i = 0; i < s; i++) {
+            if (((num >> i) & 1) == 0) {
+                ans |= (1 << i);
+            }
+        }
+        return ans;
+    }
+
+    public boolean canJump(int[] nums) {
+        int len = nums.length;
+        int max = 0;
+        for (int i = 0; i < len; ++i) {
+            if (i <= max) {
+                max = Math.max(max, i + nums[i]);
+                if (max >= len - 1) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public int minMoves(int[] nums) {
+        int min = Arrays.stream(nums).min().getAsInt();
+        int count = 0;
+        for (int num : nums) {
+            count += num - min;
+        }
+        return count;
+    }
+
+
+    public int jump(int[] nums) {
+        int len = nums.length;
+        int minJump = 0;
+        int max = 0;
+        int end = 0;
+        for (int i = 0; i < len - 1; ++i) {
+            max = Math.max(max, nums[i]);
+            if (i == end) {
+                minJump++;
+                end = max;
+            }
+        }
+        return minJump;
+    }
+
+    public int countSubIslands(int[][] grid1, int[][] grid2) {
+        int m = grid1.length, n = grid1[0].length;
+        for (int i = 0; i < m; ++i) {
+            for (int j = 0; j < n; ++j) {
+                if (grid1[i][j] == 0 && grid2[i][j] == 1) {
+                    dfs(grid2, i, j, m, n);
+                }
+            }
+        }
+        int res = 0;
+        for (int i = 0; i < m; ++i) {
+            for (int j = 0; j < n; ++j) {
+                if (grid2[i][j] == 1) {
+                    res++;
+                    dfs(grid2, i, j, m, n);
+                }
+            }
+        }
+        return res;
+    }
+
+    public void dfs(int[][] grid2, int i, int j, int m, int n) {
+        if (i > m || i < 0 || j > n || j < 0) {
+            return;
+        }
+        if (grid2[i][j] == 0) {
+            return;
+        }
+        grid2[i][j] = 0;
+        dfs(grid2, i - 1, j, m, n);
+        dfs(grid2, i, j - 1, m, n);
+        dfs(grid2, i + 1, j, m, n);
+        dfs(grid2, i, j + 1, m, n);
+    }
+
     public int balancedStringSplit(String s) {
         int count = 0;
         int R = 0;
