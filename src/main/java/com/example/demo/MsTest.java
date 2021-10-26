@@ -309,6 +309,47 @@ public class MsTest {
         return minJump;
     }
 
+    public List<Integer> majorityElement(int[] nums) {
+        HashMap<Integer, Integer> cnt = new HashMap<Integer, Integer>();
+
+        for (int i = 0; i < nums.length; i++) {
+            if (cnt.containsKey(nums[i])) {
+                cnt.put(nums[i], cnt.get(nums[i]) + 1);
+            } else {
+                cnt.put(nums[i], 1);
+            }
+        }
+        List<Integer> ans = new ArrayList<>();
+        for (int x : cnt.keySet()) {
+            if (cnt.get(x) > nums.length / 3) {
+                ans.add(x);
+            }
+        }
+
+        return ans;
+    }
+
+
+    public int[] nextGreaterElement(int[] nums1, int[] nums2) {
+        Stack<Integer> stack = new Stack<>();
+        HashMap<Integer, Integer> map = new HashMap<>();
+        for (int i = nums2.length-1; i >= 0; --i) {
+            int count = nums2[i];
+            while (!stack.isEmpty() && stack.peek() < count) {
+                stack.pop();
+            }
+            map.put(count, stack.isEmpty() ? -1 : stack.peek());
+            stack.push(count);
+        }
+        int[] res = new int[nums1.length];
+        for (int j = 0; j < nums1.length; ++j) {
+            if (map.containsKey(nums1[j])) {
+                res[j] = map.get(nums1[j]);
+            }
+        }
+        return res;
+    }
+
     public int countSubIslands(int[][] grid1, int[][] grid2) {
         int m = grid1.length, n = grid1[0].length;
         for (int i = 0; i < m; ++i) {
