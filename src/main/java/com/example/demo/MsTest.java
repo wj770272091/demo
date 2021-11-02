@@ -309,6 +309,37 @@ public class MsTest {
         return minJump;
     }
 
+    public List<Integer> majorityElement(int[] nums) {
+        HashMap<Integer, Integer> cnt = new HashMap<Integer, Integer>();
+
+        for (int i = 0; i < nums.length; i++) {
+            if (cnt.containsKey(nums[i])) {
+                cnt.put(nums[i], cnt.get(nums[i]) + 1);
+            } else {
+                cnt.put(nums[i], 1);
+            }
+        }
+        List<Integer> ans = new ArrayList<>();
+        for (int x : cnt.keySet()) {
+            if (cnt.get(x) > nums.length / 3) {
+                ans.add(x);
+            }
+        }
+
+        return ans;
+    }
+
+    public boolean searchMatrix(int[][] matrix, int target) {
+        int m = matrix.length;
+        int n = matrix[0].length;
+        for (int i = 0; i < m; ++i) {
+            for (int j = 0; j < n; ++j) {
+
+            }
+        }
+        return false;
+    }
+
     public int countSubIslands(int[][] grid1, int[][] grid2) {
         int m = grid1.length, n = grid1[0].length;
         for (int i = 0; i < m; ++i) {

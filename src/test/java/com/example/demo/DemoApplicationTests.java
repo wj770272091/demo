@@ -3,6 +3,8 @@ package com.example.demo;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import java.util.*;
+
 
 @SpringBootApplication
 class DemoApplicationTests {
@@ -35,6 +37,107 @@ class DemoApplicationTests {
         new Thread(new dns(lock1, lock2, false), "线程2").start();
     }
 
+    public int distributeCandies(int[] candyType) {
+        int len = candyType.length;
+        Set<Integer> ss = new HashSet<>();
+        for (int i = 0; i < len; ++i) {
+            ss.add(candyType[i]);
+        }
+        return Math.min(len / 2, ss.size());
+    }
+
+    public boolean isSubsequence(String s, String t) {
+        int len = t.length();
+        int lens = s.length();
+        char[] arr = s.toCharArray();
+        Stack<Character> ss = new Stack<Character>();
+        for (int i = lens - 1; i >= 0; --i) {
+            ss.add(arr[i]);
+        }
+        for (int j = 0; j < len; ++j) {
+            if (ss.empty()) {
+                return true;
+            }
+            Character cc = ss.peek();
+            if (t.charAt(j) == cc) {
+                ss.pop();
+            }
+        }
+        return ss.empty() ? true : false;
+    }
+
+    public int longestCommonSubsequence(String text1, String text2) {
+        int m = text1.length();
+        int n = text2.length();
+        int[][] dp = new int[m + 1][n + 1];
+        for (int i = 1; i <= m; ++i) {
+            char a = text1.charAt(i - 1);
+            for (int j = 1; j <= n; ++j) {
+                char b = text2.charAt(j - 1);
+                if (a == b) {
+                    dp[i][j] = dp[i - 1][j - 1] + 1;
+                } else {
+                    dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+                }
+            }
+        }
+        return dp[m][n];
+    }
+
+    public List<List<String>> solveNQueens(int n) {
+        List<List<String>> solutions = new ArrayList<List<String>>();
+        int[] queens = new int[n];
+        Arrays.fill(queens, -1);
+        Set<Integer> columns = new HashSet<Integer>();
+        Set<Integer> diagonals1 = new HashSet<Integer>();
+        Set<Integer> diagonals2 = new HashSet<Integer>();
+        backtrack(solutions, queens, n, 0, columns, diagonals1, diagonals2);
+        return solutions;
+    }
+
+    public void backtrack(List<List<String>> solutions, int[] queens, int n, int row, Set<Integer> columns, Set<Integer> diagonals1, Set<Integer> diagonals2) {
+        if (row == n) {
+            List<String> board = generateBoard(queens, n);
+            solutions.add(board);
+        } else {
+            for (int i = 0; i < n; i++) {
+                if (columns.contains(i)) {
+                    continue;
+                }
+                int diagonal1 = row - i;
+                if (diagonals1.contains(diagonal1)) {
+                    continue;
+                }
+                int diagonal2 = row + i;
+                if (diagonals2.contains(diagonal2)) {
+                    continue;
+                }
+                queens[row] = i;
+                columns.add(i);
+                diagonals1.add(diagonal1);
+                diagonals2.add(diagonal2);
+                backtrack(solutions, queens, n, row + 1, columns, diagonals1, diagonals2);
+                queens[row] = -1;
+                columns.remove(i);
+                diagonals1.remove(diagonal1);
+                diagonals2.remove(diagonal2);
+            }
+        }
+    }
+
+    public List<String> generateBoard(int[] queens, int n) {
+        List<String> board = new ArrayList<String>();
+        for (int i = 0; i < n; i++) {
+            char[] row = new char[n];
+            Arrays.fill(row, '.');
+            row[queens[i]] = 'Q';
+            board.add(new String(row));
+        }
+        return board;
+    }
+
+
+
     public class dns implements Runnable {
         Object lock1;
         Object lock2;
@@ -50,29 +153,29 @@ class DemoApplicationTests {
         public void run() {
             if (falg) {
                 synchronized (lock1) {
-                    System.out.println(Thread.currentThread().getName()+"获取锁1");
+                    System.out.println(Thread.currentThread().getName() + "获取锁1");
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    System.out.println(Thread.currentThread().getName()+"等待锁2释放");
-                    synchronized (lock2){
-                        System.out.println(Thread.currentThread().getName()+"获取锁2");
+                    System.out.println(Thread.currentThread().getName() + "等待锁2释放");
+                    synchronized (lock2) {
+                        System.out.println(Thread.currentThread().getName() + "获取锁2");
                     }
                 }
             }
-            if (!falg){
+            if (!falg) {
                 synchronized (lock2) {
-                    System.out.println(Thread.currentThread().getName()+"获取锁2");
+                    System.out.println(Thread.currentThread().getName() + "获取锁2");
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    System.out.println(Thread.currentThread().getName()+"等待锁1释放");
-                    synchronized (lock1){
-                        System.out.println(Thread.currentThread().getName()+"获取锁1");
+                    System.out.println(Thread.currentThread().getName() + "等待锁1释放");
+                    synchronized (lock1) {
+                        System.out.println(Thread.currentThread().getName() + "获取锁1");
                     }
                 }
             }
