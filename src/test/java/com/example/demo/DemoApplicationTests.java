@@ -119,6 +119,7 @@ class DemoApplicationTests {
                 backtrack(solutions, queens, n, row + 1, columns, diagonals1, diagonals2);
                 queens[row] = -1;
                 columns.remove(i);
+
                 diagonals1.remove(diagonal1);
                 diagonals2.remove(diagonal2);
             }
