@@ -1,0 +1,7 @@
+logging:
+  level:
+    root: info
+    org:
+      springframework:
+        security: DEBUG
+  config: classpath:logback-ch.xml
