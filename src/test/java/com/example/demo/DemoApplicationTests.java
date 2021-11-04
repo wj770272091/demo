@@ -31,10 +31,23 @@ class DemoApplicationTests {
 //        for (ExportTemperatureDto ex:ress){
 //            System.out.println(ex.toString());
 //        }
-        Object lock1 = new Object();
-        Object lock2 = new Object();
-        new Thread(new dns(lock1, lock2, true), "线程1").start();
-        new Thread(new dns(lock1, lock2, false), "线程2").start();
+//        Object lock1 = new Object();
+//        Object lock2 = new Object();
+//        new Thread(new dns(lock1, lock2, true), "线程1").start();
+//        new Thread(new dns(lock1, lock2, false), "线程2").start();
+        System.out.println("开始:" + new Date().getTime());
+//        Object obj = null;
+//        for (int i = 0; i < 10; ++i) {
+//            obj = new Object();
+//            System.out.println(obj.toString());
+//        }
+
+        for (int i = 0; i < 10; ++i) {
+            Object obj = new Object();
+            System.out.println(obj.toString());
+        }
+
+        System.out.println("结束:" + new Date().getTime());
     }
 
     public int distributeCandies(int[] candyType) {
@@ -135,6 +148,56 @@ class DemoApplicationTests {
             board.add(new String(row));
         }
         return board;
+    }
+
+    public boolean isPerfectSquare(int num) {
+        int left = 0, right = num;
+        long sum = 0;
+        while (left <= right) {
+            int mid = (right - left) / 2 + left;
+            sum = (long) mid * mid;
+            if (sum < num) {
+                left = mid + 1;
+            } else if (sum > num) {
+                right = mid - 1;
+            } else {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public int search(int[] nums, int target) {
+        int left = 0, right = nums.length;
+        int mid = 0;
+        int count = 0;
+        while (left <= right) {
+            mid = (left + right) / 2;
+            count = nums[mid];
+            if (count < target) {
+                left = mid + 1;
+            } else if (count > target) {
+                right = mid - 1;
+            } else {
+                return mid;
+            }
+        }
+        return -1;
+    }
+
+    public int searchInsert(int[] nums, int target) {
+        int left = 0, right = nums.length - 1;
+        while (left <= right) {
+            int mid = (right + left) / 2;
+            if (nums[mid] < target) {
+                left = mid + 1;
+            } else if (nums[mid] > target) {
+                right = mid - 1;
+            } else {
+                return mid;
+            }
+        }
+        return left;
     }
 
     public int combinationSum4(int[] nums, int target) {
