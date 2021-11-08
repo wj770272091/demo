@@ -215,6 +215,111 @@ class DemoApplicationTests {
         return dp[target];
     }
 
+    public int longestSubsequence(int[] arr, int difference) {
+        HashMap<Integer, Integer> dp = new HashMap<>();
+        int ans = 0;
+        for (int v : arr) {
+            dp.put(v, dp.getOrDefault(v - difference, 0) + 1);
+            ans = Math.max(ans, dp.get(v));
+        }
+        return ans;
+    }
+
+    public int[] sortedSquares(int[] nums) {
+        int len = nums.length;
+        int[] ans = new int[len];
+        for (int i = 0, j = len - 1, pns = len - 1; i <= j; ) {
+            if (nums[i] * nums[i] < nums[j] * nums[j]) {
+                ans[pns] = nums[j] * nums[j];
+                j--;
+            } else {
+                ans[pns] = nums[i] * nums[i];
+                i++;
+            }
+            pns--;
+        }
+        return ans;
+    }
+
+    public String getHint(String secret, String guess) {
+        int[] cns = new int[10];
+        int[] cng = new int[10];
+        int Bulls = 0;
+        for (int i = 0; i < secret.length(); ++i) {
+            char charS = secret.charAt(i);
+            char charG = guess.charAt(i);
+            if (charS == charG) {
+                Bulls++;
+            } else {
+                cns[charS - '0']++;
+                cng[charG - '0']++;
+            }
+        }
+        int Cows = 0;
+        for (int j = 0; j < cns.length; ++j) {
+            Cows += Math.min(cns[j], cng[j]);
+        }
+        StringBuilder str = new StringBuilder();
+        str.append(Bulls);
+        str.append("A");
+        str.append(Cows);
+        str.append("B");
+        return str.toString();
+    }
+
+    public void moveZeroes(int[] nums) {
+        int left = 0;
+        int len = nums.length;
+        for (int i = 0; i < len - 1; ++i) {
+            if (nums[i] == 0) {
+                left = i + 1;
+                while (left < len - 1 && nums[left] == 0) {
+                    left++;
+                }
+                int dmp = nums[i];
+                nums[i] = nums[left];
+                nums[left] = dmp;
+            }
+        }
+    }
+
+    public int[] twoSum(int[] numbers, int target) {
+        int len = numbers.length;
+        int[] res = new int[2];
+        for (int i = 0; i < len - 1; ++i) {
+            for (int j = i + 1; j < len; ++j) {
+                if (numbers[i] + numbers[j] == target) {
+                    res[0] = i++;
+                    res[1] = j++;
+                    return res;
+                }
+            }
+        }
+        return res;
+    }
+
+    public void reverseString(char[] s) {
+        int left = 0;
+        int right = s.length - 1;
+        Character dmp = '1';
+        while (left < right) {
+            dmp = s[left];
+            s[left]=s[right];
+            s[right]=dmp;
+            left++;
+            right--;
+        }
+    }
+
+    public void rotate(int[] nums, int k) {
+        int len = nums.length;
+        int[] arr = new int[len];
+        for (int i = 0; i < len; ++i) {
+            arr[(i + k) % len] = nums[i];
+        }
+        System.arraycopy(arr, 0, nums, 0, len);
+    }
+
     public int coinChange(int[] coins, int amount) {
         int[] dp = new int[amount + 1];
         Arrays.fill(dp, amount + 1);
