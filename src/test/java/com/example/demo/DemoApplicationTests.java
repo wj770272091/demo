@@ -185,6 +185,173 @@ class DemoApplicationTests {
         return -1;
     }
 
+    public int findPoisonedDuration(int[] timeSeries, int duration) {
+        int ans = 0;
+        int expired = 0;
+        for (int i = 0; i < timeSeries.length; ++i) {
+            if (timeSeries[i] >= expired) {
+                ans += duration;
+            } else {
+                ans += timeSeries[i] + duration - expired;
+            }
+            expired = timeSeries[i] + duration;
+        }
+        return ans;
+    }
+
+    public MsTest.ListNode removeNthFromEnd(MsTest.ListNode head, int n) {
+        MsTest.ListNode low = head, fast = head;
+        for (int i = 0; i < n; ++i) {
+            fast = fast.next;
+        }
+        if (fast == null) {
+            return head.next;
+        }
+        while (fast != null && fast.next != null) {
+            fast = fast.next;
+            low = low.next;
+        }
+
+        low.next = low.next.next;
+        return head;
+    }
+
+    public int lengthOfLongestSubstring(String s) {
+        HashMap<Character, Integer> map = new HashMap();
+        int len = s.length();
+        int left = 0, right = 0;
+        int res = 0;
+        while (right < len) {
+            char ch = s.charAt(right);
+            right++;
+            map.put(ch, map.getOrDefault(ch, 0) + 1);
+            while (map.get(ch) > 1) {
+                char ch2 = s.charAt(left);
+                map.put(ch2, map.getOrDefault(ch2, 1) - 1);
+                left++;
+            }
+            res = Math.max(right - left, res);
+        }
+        return res;
+    }
+
+    public boolean checkInclusion(String s1, String s2) {
+        int n = s1.length(), m = s2.length();
+        if (n > m) {
+            return false;
+        }
+        int[] cnt1 = new int[26];
+        int[] cnt2 = new int[26];
+        for (int i = 0; i < n; ++i) {
+            ++cnt1[s1.charAt(i) - 'a'];
+            ++cnt2[s2.charAt(i) - 'a'];
+        }
+        if (Arrays.equals(cnt1, cnt2)) {
+            return true;
+        }
+        for (int i = n; i < m; ++i) {
+            ++cnt2[s2.charAt(i) - 'a'];
+            --cnt2[s2.charAt(i - n) - 'a'];
+            if (Arrays.equals(cnt1, cnt2)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    int[] dx = {1, 0, 0, -1};
+    int[] dy = {0, 1, -1, 0};
+
+    public int[][] floodFill(int[][] image, int sr, int sc, int newColor) {
+        int currColor = image[sr][sc];
+        if (currColor != newColor) {
+            dfs(image, sr, sc, currColor, newColor);
+        }
+        return image;
+    }
+
+    public void dfs(int[][] image, int x, int y, int color, int newColor) {
+        if (image[x][y] == color) {
+            image[x][y] = newColor;
+            for (int i = 0; i < 4; i++) {
+                int mx = x + dx[i], my = y + dy[i];
+                if (mx >= 0 && mx < image.length && my >= 0 && my < image[0].length) {
+                    dfs(image, mx, my, color, newColor);
+                }
+            }
+        }
+    }
+
+    public int maxAreaOfIsland(int[][] grid) {
+        // 记录岛屿的最大面积
+        int res = 0;
+        int m = grid.length, n = grid[0].length;
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (grid[i][j] == 1) {
+                    // 淹没岛屿，并更新最大岛屿面积
+                    res = Math.max(res, dfs(grid, i, j));
+                }
+            }
+        }
+        return res;
+    }
+
+    public int dfs(int[][] grid, int i, int j) {
+        int m = grid.length, n = grid[0].length;
+        if (i < 0 || j < 0 || i >= m || j >= n) {
+            // 超出索引边界
+            return 0;
+        }
+        if (grid[i][j] == 0) {
+            // 已经是海水了
+            return 0;
+        }
+        // 将 (i, j) 变成海水
+        grid[i][j] = 0;
+
+        return dfs(grid, i + 1, j)
+                + dfs(grid, i, j + 1)
+                + dfs(grid, i - 1, j)
+                + dfs(grid, i, j - 1) + 1;
+    }
+
+    public MsTest.ListNode middleNode(MsTest.ListNode head) {
+        MsTest.ListNode low, fast;
+        low = fast = head;
+        while (fast != null && fast.next != null) {
+            low = low.next;
+            fast = fast.next.next;
+        }
+        return low;
+    }
+
+    public String reverseWords(String s) {
+
+        String[] ss = s.split(" ");
+        int len = ss.length;
+        StringBuilder str = new StringBuilder();
+        for (int i = 0; i < len; ++i) {
+            char[] ch = ss[i].toCharArray();
+            int left = 0;
+            int right = ch.length - 1;
+            while (left < right) {
+                Character a = ch[left];
+                ch[left] = ch[right];
+                ch[right] = a;
+                left++;
+                right--;
+            }
+            str.append(ch);
+            if (i != len - 1) {
+                str.append(" ");
+            }
+
+        }
+
+        return str.toString();
+    }
+
     public int searchInsert(int[] nums, int target) {
         int left = 0, right = nums.length - 1;
         while (left <= right) {
@@ -304,8 +471,8 @@ class DemoApplicationTests {
         Character dmp = '1';
         while (left < right) {
             dmp = s[left];
-            s[left]=s[right];
-            s[right]=dmp;
+            s[left] = s[right];
+            s[right] = dmp;
             left++;
             right--;
         }

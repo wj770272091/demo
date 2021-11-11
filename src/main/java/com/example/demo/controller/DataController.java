@@ -1,19 +1,15 @@
 package com.example.demo.controller;
 
-import com.example.demo.bean.Location;
-//import com.example.demo.bean.Person;
-//import com.example.demo.bean.PersonMongo;
-//import com.example.demo.service.DemoService;
-//import com.example.demo.service.PersonMongoRepository;
-//import com.example.demo.service.PersonRepository;
+import com.example.demo.bean.User;
+import com.example.demo.dao.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-
-import java.util.*;
+import java.util.List;
+import java.util.Random;
 
 /**
  * @NAME: DataController
@@ -22,7 +18,25 @@ import java.util.*;
  * @TIME: 14:19
  */
 @RestController
+@RequestMapping("/api/user")
 public class DataController {
+    @Autowired
+    private UserMapper userMapper;
+    @PostMapping("/save")
+    public String addUser() {
+        User user = new User();
+        user.setNickname("zhangsan" + new Random().nextInt());
+        user.setPassword("123456");
+        user.setSex(1);
+        user.setBirthday("1997-12-03");
+        userMapper.addUser(user);
+        return "success";
+    }
+
+    @GetMapping("/findUsers")
+    public List<User> findUsers() {
+        return userMapper.findUsers();
+    }
 //    @Autowired
 //    PersonRepository personRepository;
 //    @Autowired

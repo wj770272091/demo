@@ -1,7 +1,62 @@
-logging:
-  level:
-    root: info
-    org:
-      springframework:
-        security: DEBUG
-  config: classpath:logback-ch.xml
+#logging:
+#  level:
+#    root: info
+#    org:
+#      springframework:
+#        security: DEBUG
+#  config: classpath:logback-ch.xml
+
+  #显示sql
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  shardingsphere:
+    props:
+      sql:
+        show: true
+  #配置数据源
+    datasource:
+      names: ds1,ds2,ds3
+  #master-ds1数据库连接信息
+      ds1:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://192.168.44.128:3307/sharding-jdbc-db?useUnicode=true&useSSL=false&serverTimezone=Asia/Shanghai
+        username: root
+        password: ckPt$8Az4W
+        maxPoolSize: 100
+        minPoolSize: 5
+  #slave-ds2数据库连接信息
+      ds2:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://192.168.44.129:3307/sharding-jdbc-db?useUnicode=true&useSSL=false&serverTimezone=Asia/Shanghai
+        username: root
+        password: ckPtAz4W
+        maxPoolSize: 100
+        minPoolSize: 5
+
+  #slave-ds3数据库连接信息
+      ds3:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://192.168.44.129:3307/sharding-jdbc-db?useUnicode=true&useSSL=false&serverTimezone=Asia/Shanghai
+        username: root
+        password: ckPtAz4W
+        maxPoolSize: 100
+        minPoolSize: 5
+  #配置默认数据源ds1 默认数据源,主要用于写
+    sharding:
+      default-data-source-name: ds1
+  #配置主从名称
+    masterslave:
+      name: ms
+  #置主库master,负责数据的写入
+      master-data-source-name: ds1
+  #配置从库slave节点
+      slave-data-source-names: ds2,ds3
+  #配置slave节点的负载均衡均衡策略,采用轮询机制
+      load-balance-algorithm-type: round_robin
+  #整合mybatis的配置
+mybatis:
+  type-aliases-package: com.ppdai.shardingjdbc.entity
