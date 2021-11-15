@@ -316,6 +316,21 @@ class DemoApplicationTests {
                 + dfs(grid, i, j - 1) + 1;
     }
 
+    public int getMoneyAmount(int n) {
+        int[][] f = new int[n + 1][n + 1];
+        for (int i = n - 1; i >= 1; --i) {
+            for (int j = i + 1; j <= n; ++j) {
+                int count = Integer.MAX_VALUE;
+                for (int k = i; k < j; ++k) {
+                    int cost = k + Math.max(f[k + 1][j], f[i][k - 1]);
+                    count = Math.min(cost, count);
+                }
+                f[i][j] = count;
+            }
+        }
+        return f[1][n];
+    }
+
     public MsTest.ListNode middleNode(MsTest.ListNode head) {
         MsTest.ListNode low, fast;
         low = fast = head;
@@ -324,6 +339,59 @@ class DemoApplicationTests {
             fast = fast.next.next;
         }
         return low;
+    }
+
+    public MsTest.TreeNode mergeTrees(MsTest.TreeNode root1, MsTest.TreeNode root2) {
+        if (root1 == null) {
+            return root2;
+        }
+        if (root2 == null) {
+            return root1;
+        }
+        MsTest.TreeNode ma = new MsTest.TreeNode(root1.val + root2.val);
+        ma.left = mergeTrees(root1.left, root2.left);
+        ma.left = mergeTrees(root1.right, root2.right);
+        return ma;
+    }
+
+    class Node {
+        public int val;
+        public Node left;
+        public Node right;
+        public Node next;
+
+        public Node() {
+        }
+
+        public Node(int _val) {
+            val = _val;
+        }
+
+        public Node(int _val, Node _left, Node _right, Node _next) {
+            val = _val;
+            left = _left;
+            right = _right;
+            next = _next;
+        }
+    }
+
+
+    public Node connect(Node root) {
+        if (root == null) {
+            return root;
+        }
+        con(root.left, root.right);
+        return root;
+    }
+
+    public void con(Node node1, Node node2) {
+        if (node1 == null || node2 == null) {
+            return;
+        }
+        node1.next = node2;
+        con(node1.left, node1.right);
+        con(node2.left, node2.right);
+        con(node1.right, node2.left);
     }
 
     public String reverseWords(String s) {
@@ -348,8 +416,60 @@ class DemoApplicationTests {
             }
 
         }
-
         return str.toString();
+    }
+
+    public int bulbSwitch(int n) {
+        return (int) Math.sqrt(n + 0.5);
+    }
+
+    public MsTest.ListNode mergeTwoLists(MsTest.ListNode l1, MsTest.ListNode l2) {
+        if (l1 == null) {
+            return l2;
+        } else if (l2 == null) {
+            return l1;
+        } else if (l1.val < l2.val) {
+            l1.next = mergeTwoLists(l1.next, l2);
+            return l1;
+        } else {
+            l2.next = mergeTwoLists(l1, l2.next);
+            return l2;
+        }
+
+    }
+
+    public MsTest.ListNode reverseList(MsTest.ListNode head) {
+        MsTest.ListNode prev = null;
+        MsTest.ListNode cuur = head;
+        while (cuur != null) {
+            MsTest.ListNode next = cuur.next;
+            cuur.next = prev;
+            prev = cuur;
+            cuur = next;
+        }
+        return prev;
+    }
+
+    List<Integer> temp = new ArrayList<>();
+    List<List<Integer>> ans = new ArrayList<>();
+
+    public List<List<Integer>> combine(int n, int k) {
+        dfsCom(1, n, k);
+        return ans;
+    }
+
+    public void dfsCom(int cur, int n, int k) {
+        if (temp.size() + (n - cur + 1) < k) {
+            return;
+        }
+        if (temp.size()==k){
+            ans.add(new ArrayList<Integer>(temp));
+            return;
+        }
+        temp.add(cur);
+        dfsCom(cur+1,n,k);
+        temp.remove(temp.size()-1);
+        dfsCom(cur+1,n,k);
     }
 
     public int searchInsert(int[] nums, int target) {
