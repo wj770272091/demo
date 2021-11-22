@@ -269,6 +269,48 @@ class DemoApplicationTests {
         }
         return image;
     }
+    int sum=0;
+    public int findTilt(MsTest.TreeNode root) {
+        sum(root);
+        return sum;
+    }
+    public int sum(MsTest.TreeNode node){
+        if (node==null){
+            return 0;
+        }
+        int left=sum(node.left);
+        int right=sum(node.right);
+        sum+=Math.abs(left-right);
+        return left+right+node.val;
+    }
+    int[] nums;
+    int[] original;
+
+    public void Solution(int[] nums) {
+        this.nums = nums;
+        this.original = new int[nums.length];
+        System.arraycopy(nums, 0, original, 0, nums.length);
+    }
+
+    public int[] reset() {
+        System.arraycopy(original, 0, nums, 0, nums.length);
+        return nums;
+    }
+
+    public int[] shuffle() {
+        int[] shuffled = new int[nums.length];
+        List<Integer> list = new ArrayList<Integer>();
+        for (int i = 0; i < nums.length; ++i) {
+            list.add(nums[i]);
+        }
+        Random random = new Random();
+        for (int i = 0; i < nums.length; ++i) {
+            int j = random.nextInt(list.size());
+            shuffled[i] = list.remove(j);
+        }
+        System.arraycopy(shuffled, 0, nums, 0, nums.length);
+        return nums;
+    }
 
     public void dfs(int[][] image, int x, int y, int color, int newColor) {
         if (image[x][y] == color) {
@@ -458,18 +500,95 @@ class DemoApplicationTests {
         return ans;
     }
 
+    List<List<Integer>> res = new LinkedList<>();
+
+    public List<List<Integer>> permute(int[] nums) {
+        LinkedList<Integer> list = new LinkedList<>();
+        dnf(nums, list);
+        return res;
+    }
+
+    public void dnf(int[] num, LinkedList<Integer> list) {
+        if (list.size() == num.length) {
+            res.add(new ArrayList<>(list));
+            return;
+        }
+        for (int i = 0; i < num.length; ++i) {
+            if (list.contains(num[i])) {
+                continue;
+            }
+            list.add(num[i]);
+            dnf(num, list);
+            list.removeLast();
+        }
+    }
+
+    public List<String> letterCasePermutation(String s) {
+        List<StringBuilder> list = new ArrayList<>();
+        list.add(new StringBuilder());
+        for (Character c : s.toCharArray()) {
+            int len = list.size();
+            if (Character.isLetter(c)) {
+                for (int i = 0; i < len; ++i) {
+                    list.add(new StringBuilder(list.get(i)));
+                    list.get(i).append(Character.toLowerCase(c));
+                    list.get(len + i).append(Character.toUpperCase(c));
+                }
+            } else {
+                for (int i = 0; i < len; ++i) {
+                    list.get(i).append(c);
+                }
+            }
+        }
+        List<String> res = new ArrayList<>();
+        for (StringBuilder aa : list) {
+            res.add(aa.toString());
+        }
+        return res;
+    }
+
+    public int maxProduct(String[] words) {
+        int len = words.length;
+        int[] mark = new int[len];
+        for (int i = 0; i < len; ++i) {
+            String word = words[i];
+            for (int j = 0; j < word.length(); ++j) {
+                mark[i] |= 1 << (word.charAt(j) - 'a');
+            }
+        }
+        int maxProd = 0;
+        for (int i = 0; i < len; i++) {
+            for (int j = i + 1; j < len; j++) {
+                if ((mark[i] & mark[j]) == 0) {
+                    maxProd = Math.max(maxProd, words[i].length() * words[j].length());
+                }
+            }
+        }
+        return maxProd;
+    }
+
+    public int climbStairs(int n) {
+        int p = 0, q = 0, r = 1;
+        for (int i = 1; i <= n; ++i) {
+            p = q;
+            q = r;
+            r = p + q;
+        }
+        return r;
+    }
+
     public void dfsCom(int cur, int n, int k) {
         if (temp.size() + (n - cur + 1) < k) {
             return;
         }
-        if (temp.size()==k){
+        if (temp.size() == k) {
             ans.add(new ArrayList<Integer>(temp));
             return;
         }
         temp.add(cur);
-        dfsCom(cur+1,n,k);
-        temp.remove(temp.size()-1);
-        dfsCom(cur+1,n,k);
+        dfsCom(cur + 1, n, k);
+        temp.remove(temp.size() - 1);
+        dfsCom(cur + 1, n, k);
     }
 
     public int searchInsert(int[] nums, int target) {
