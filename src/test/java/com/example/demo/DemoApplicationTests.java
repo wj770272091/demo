@@ -269,20 +269,24 @@ class DemoApplicationTests {
         }
         return image;
     }
-    int sum=0;
+
+    int sum = 0;
+
     public int findTilt(MsTest.TreeNode root) {
         sum(root);
         return sum;
     }
-    public int sum(MsTest.TreeNode node){
-        if (node==null){
+
+    public int sum(MsTest.TreeNode node) {
+        if (node == null) {
             return 0;
         }
-        int left=sum(node.left);
-        int right=sum(node.right);
-        sum+=Math.abs(left-right);
-        return left+right+node.val;
+        int left = sum(node.left);
+        int right = sum(node.right);
+        sum += Math.abs(left - right);
+        return left + right + node.val;
     }
+
     int[] nums;
     int[] original;
 
@@ -310,6 +314,195 @@ class DemoApplicationTests {
         }
         System.arraycopy(shuffled, 0, nums, 0, nums.length);
         return nums;
+    }
+
+    public boolean backspaceCompare(String s, String t) {
+        int i = s.length() - 1, j = t.length() - 1;
+        int skipS = 0, skipT = 0;
+
+        while (i >= 0 || j >= 0) {
+            while (i >= 0) {
+                if (s.charAt(i) == '#') {
+                    skipS++;
+                    i--;
+                } else if (skipS > 0) {
+                    skipS--;
+                    i--;
+                } else {
+                    break;
+                }
+            }
+            while (j >= 0) {
+                if (t.charAt(j) == '#') {
+                    skipT++;
+                    j--;
+                } else if (skipT > 0) {
+                    skipT--;
+                    j--;
+                } else {
+                    break;
+                }
+            }
+            if (i >= 0 && j >= 0) {
+                if (s.charAt(i) != t.charAt(j)) {
+                    return false;
+                }
+            } else {
+                if (i >= 0 || j >= 0) {
+                    return false;
+                }
+            }
+            i--;
+            j--;
+        }
+        return true;
+    }
+
+    public boolean buddyStrings(String s, String goal) {
+        if (s.length() != goal.length()) {
+            return false;
+        }
+        if (s.equals(goal)) {
+            int[] count = new int[26];
+            for (int i = 0; i < s.length(); i++) {
+                count[s.charAt(i) - 'a']++;
+                if (count[s.charAt(i) - 'a'] > 1) {
+                    return true;
+                }
+            }
+            return false;
+        } else {
+            int first = -1, second = -1;
+            for (int i = 0; i < goal.length(); ++i) {
+                if (s.charAt(i) != goal.charAt(i)) {
+                    if (first == -1) {
+                        first = i;
+                    } else if (second == -1) {
+                        second = i;
+                    } else {
+                        return false;
+                    }
+                }
+            }
+            return (second != -1 && s.charAt(second) == goal.charAt(first) && s.charAt(first) == goal.charAt(second));
+        }
+    }
+
+    public int numIslands(char[][] grid) {
+        if (grid.length == 0 || grid == null) {
+            return 0;
+        }
+        int count = 0;
+        int l = grid.length;
+        int r = grid[0].length;
+        for (int i = 0; i < l; ++i) {
+            for (int j = 0; j < r; ++j) {
+                if (grid[i][j] == '1') {
+                    count++;
+                    num(grid, i, j);
+                }
+            }
+        }
+        return count;
+    }
+
+    public void num(char[][] grid, int m, int n) {
+        int mm = grid.length;
+        int nn = grid[0].length;
+        if (m < 0 || n < 0 || m >= mm || n >= nn || grid[m][n] == '0') {
+            return;
+        }
+        grid[m][n] = '0';
+        num(grid, m + 1, n);
+        num(grid, m - 1, n);
+        num(grid, m, n + 1);
+        num(grid, m, n - 1);
+    }
+
+    public String originalDigits(String s) {
+        Map<Character, Integer> c = new HashMap<Character, Integer>();
+        for (
+                int i = 0; i < s.length(); ++i) {
+            char ch = s.charAt(i);
+            c.put(ch, c.getOrDefault(ch, 0) + 1);
+        }
+
+        int[] cnt = new int[10];
+        cnt[0] = c.getOrDefault('z', 0);
+        cnt[2] = c.getOrDefault('w', 0);
+        cnt[4] = c.getOrDefault('u', 0);
+        cnt[6] = c.getOrDefault('x', 0);
+        cnt[8] = c.getOrDefault('g', 0);
+
+        cnt[3] = c.getOrDefault('h', 0) - cnt[8];
+        cnt[5] = c.getOrDefault('f', 0) - cnt[4];
+        cnt[7] = c.getOrDefault('s', 0) - cnt[6];
+
+        cnt[1] = c.getOrDefault('o', 0) - cnt[0] - cnt[2] - cnt[4];
+
+        cnt[9] = c.getOrDefault('i', 0) - cnt[5] - cnt[6] - cnt[8];
+
+        StringBuffer ans = new StringBuffer();
+        for (int i = 0; i < 10; ++i) {
+            for (int j = 0; j < cnt[i]; ++j) {
+                ans.append((char) (i + '0'));
+            }
+        }
+        return ans.toString();
+    }
+
+    public int findCircleNum(int[][] isConnected) {
+        int lenth = isConnected.length;
+        boolean[] vo = new boolean[lenth];
+        int count = 0;
+        for (int i = 0; i < lenth; ++i) {
+            if (!vo[i]) {
+                find(isConnected, lenth, vo, i);
+                count++;
+            }
+
+        }
+        return count;
+    }
+
+    public void find(int[][] isConnected, int lenth, boolean[] vo, int i) {
+        for (int j = 0; j < lenth; ++j) {
+            if (isConnected[i][j] == 1 && !vo[j]) {
+                vo[j] = true;
+                find(isConnected, lenth, vo, j);
+            }
+        }
+    }
+
+    public boolean isSubtree(MsTest.TreeNode root, MsTest.TreeNode subRoot) {
+        return dd(root, subRoot);
+    }
+
+    public boolean dd(MsTest.TreeNode root, MsTest.TreeNode subRoot) {
+        if (root == null) {
+            return false;
+        }
+        return check(root, subRoot) || dd(root.left, subRoot) || dd(root.right, subRoot);
+    }
+
+    public boolean check(MsTest.TreeNode root, MsTest.TreeNode subRoot) {
+        if (root == null && subRoot == null) {
+            return true;
+        }
+        if (root == null || subRoot == null || root.val != subRoot.val) {
+            return false;
+        }
+        return check(root.left, subRoot.left) && check(root.right, subRoot.right);
+    }
+
+    public MsTest.TreeNode searchBST(MsTest.TreeNode root, int val) {
+        if (root == null) {
+            return null;
+        }
+        if (root.val==val){
+            return root;
+        }
+        return searchBST(root.val<val?root.right:root.left,val);
     }
 
     public void dfs(int[][] image, int x, int y, int color, int newColor) {
