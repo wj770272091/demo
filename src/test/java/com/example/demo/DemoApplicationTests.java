@@ -42,12 +42,13 @@ class DemoApplicationTests {
 //            System.out.println(obj.toString());
 //        }
 
-        for (int i = 0; i < 10; ++i) {
-            Object obj = new Object();
-            System.out.println(obj.toString());
-        }
-
-        System.out.println("结束:" + new Date().getTime());
+//        for (int i = 0; i < 10; ++i) {
+//            Object obj = new Object();
+//            System.out.println(obj.toString());
+//        }
+//
+//        System.out.println("结束:" + new Date().getTime());
+        subsets(new int[]{1, 2, 3});
     }
 
     public int distributeCandies(int[] candyType) {
@@ -57,6 +58,39 @@ class DemoApplicationTests {
             ss.add(candyType[i]);
         }
         return Math.min(len / 2, ss.size());
+    }
+
+    public List<String> letterCombinations(String digits) {
+        List<String> list = new ArrayList<>();
+        if (digits.length() == 0) {
+            return list;
+        }
+        HashMap<String, String> map = new HashMap<>();
+        map.put("2", "abc");
+        map.put("3", "def");
+        map.put("4", "ghi");
+        map.put("5", "jkl");
+        map.put("6", "mno");
+        map.put("7", "pqrs");
+        map.put("8", "tuv");
+        map.put("9", "wxyz");
+        dddddd(list, 0, digits, map, new StringBuffer());
+        return list;
+    }
+
+    public void dddddd(List<String> list, int index, String digits, HashMap<String, String> map, StringBuffer str) {
+        if (index == digits.length()) {
+            list.add(str.toString());
+            return;
+        } else {
+            char di = digits.charAt(index);
+            String ss=map.get(String.valueOf(di));
+            for (int i=0;i<ss.length();++i){
+                str.append(ss.charAt(i));
+                dddddd(list,index+1,digits,map,str);
+                str.deleteCharAt(index);
+            }
+        }
     }
 
     public boolean isSubsequence(String s, String t) {
@@ -358,6 +392,25 @@ class DemoApplicationTests {
         return true;
     }
 
+    List<Integer> t = new ArrayList<Integer>();
+    List<List<Integer>> ans = new ArrayList<List<Integer>>();
+
+    public List<List<Integer>> subsets(int[] nums) {
+        dfs(0, nums);
+        return ans;
+    }
+
+    public void dfs(int cur, int[] nums) {
+        if (cur == nums.length) {
+            ans.add(new ArrayList<Integer>(t));
+            return;
+        }
+        t.add(nums[cur]);
+        dfs(cur + 1, nums);
+        t.remove(t.size() - 1);
+        dfs(cur + 1, nums);
+    }
+
     public boolean buddyStrings(String s, String goal) {
         if (s.length() != goal.length()) {
             return false;
@@ -499,10 +552,10 @@ class DemoApplicationTests {
         if (root == null) {
             return null;
         }
-        if (root.val==val){
+        if (root.val == val) {
             return root;
         }
-        return searchBST(root.val<val?root.right:root.left,val);
+        return searchBST(root.val < val ? root.right : root.left, val);
     }
 
     public void dfs(int[][] image, int x, int y, int color, int newColor) {
@@ -686,11 +739,11 @@ class DemoApplicationTests {
     }
 
     List<Integer> temp = new ArrayList<>();
-    List<List<Integer>> ans = new ArrayList<>();
+    List<List<Integer>> ans1 = new ArrayList<>();
 
     public List<List<Integer>> combine(int n, int k) {
         dfsCom(1, n, k);
-        return ans;
+        return ans1;
     }
 
     List<List<Integer>> res = new LinkedList<>();
@@ -775,7 +828,7 @@ class DemoApplicationTests {
             return;
         }
         if (temp.size() == k) {
-            ans.add(new ArrayList<Integer>(temp));
+            ans1.add(new ArrayList<Integer>(temp));
             return;
         }
         temp.add(cur);
