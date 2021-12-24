@@ -60,6 +60,45 @@ class DemoApplicationTests {
         return Math.min(len / 2, ss.size());
     }
 
+    public int eatenApples(int[] apples, int[] days) {
+        int ans = 0;
+        PriorityQueue<int[]> pq = new PriorityQueue<int[]>((a, b) -> (a[0] - b[0]));
+        int len = apples.length;
+        int i = 0;
+        while (i < len) {
+            while (!pq.isEmpty() && pq.peek()[0] <= i) {
+                pq.poll();
+            }
+            int flDays = i + days[i];
+            int count = apples[i];
+            if (count > 0) {
+                pq.offer(new int[]{flDays, count});
+            }
+            if (!pq.isEmpty()) {
+                int[] aa = pq.peek();
+                aa[1]--;
+                if (aa[1] == 0) {
+                    pq.poll();
+                }
+                ans++;
+            }
+            i++;
+        }
+        while (!pq.isEmpty()) {
+            while (!pq.isEmpty() && pq.peek()[0] <= i) {
+                pq.poll();
+            }
+            if (pq.isEmpty()) {
+                break;
+            }
+            int[] bb = pq.poll();
+            int con = Math.min(bb[0] - i, bb[1]);
+            ans += con;
+            i += con;
+        }
+        return ans;
+    }
+
     public List<String> letterCombinations(String digits) {
         List<String> list = new ArrayList<>();
         if (digits.length() == 0) {
@@ -78,19 +117,275 @@ class DemoApplicationTests {
         return list;
     }
 
+    public int dayOfYear(String date) {
+        HashSet<Integer> set = new HashSet<>();
+        set.add(1);
+        set.add(3);
+        set.add(5);
+        set.add(7);
+        set.add(8);
+        set.add(10);
+        set.add(12);
+        String[] aa = date.split("-");
+        int m = Integer.valueOf(aa[1]);
+        int d = Integer.valueOf(aa[2]);
+        int y = Integer.valueOf(aa[0]);
+        int res = 0;
+        if (m > 2) {
+            for (int i = 1; i < m; ++i) {
+                if (set.contains(i)) {
+                    res += 31;
+                } else {
+                    if (i == 2) {
+                        if ((y % 4 == 0 && y % 100 != 0) || y % 400 == 0) {
+                            res += 29;
+                        } else {
+                            res += 28;
+                        }
+                    } else {
+                        res += 30;
+                    }
+                }
+            }
+            res += d;
+        } else {
+            return d + (m - 1) * 31;
+        }
+        return res;
+    }
+
+    public int repeatedStringMatch(String a, String b) {
+        int l = (b.length() + a.length() - 1) / a.length();
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < l; i++)
+            sb.append(a);
+        for (int i = 0; i <= sb.length() - b.length(); i++) {
+            if (sb.substring(i, i + b.length()).equals(b))
+                return l;
+        }
+        sb.append(a);
+        for (int i = a.length() * l - b.length() + 1; i <= sb.length() - b.length(); i++)
+            if (sb.substring(i, i + b.length()).equals(b))
+                return l + 1;
+        return -1;
+    }
+
+    public int[] searchRange(int[] nums, int target) {
+        int len = nums.length;
+        int left = 0, right = len - 1;
+        int[] res = new int[2];
+        Arrays.fill(res, -1);
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] == target) {
+                int mm = mid + 1;
+                while (mm < len && nums[mm] == target) {
+                    mm++;
+                }
+                res[1] = mm - 1;
+                int nn = mid - 1;
+                while (nn > 0 && nums[nn] == target) {
+                    nn--;
+                }
+                res[0] = nn + 1;
+                break;
+            } else if (nums[mid] < target) {
+                left++;
+            } else {
+                right--;
+            }
+        }
+        return res;
+    }
+
     public void dddddd(List<String> list, int index, String digits, HashMap<String, String> map, StringBuffer str) {
         if (index == digits.length()) {
             list.add(str.toString());
             return;
         } else {
             char di = digits.charAt(index);
-            String ss=map.get(String.valueOf(di));
-            for (int i=0;i<ss.length();++i){
+            String ss = map.get(String.valueOf(di));
+            for (int i = 0; i < ss.length(); ++i) {
                 str.append(ss.charAt(i));
-                dddddd(list,index+1,digits,map,str);
+                dddddd(list, index + 1, digits, map, str);
                 str.deleteCharAt(index);
             }
         }
+    }
+
+    //    public int rob(int[] nums) {
+//        int len = nums.length;
+//        if (len==1){
+//            return nums[0];
+//        }else if (len==2){
+//            return Math.max();
+//        }
+//
+//    }
+    public int maxPower(String s) {
+        int ans = 1, cnt = 1;
+        for (int i = 1; i < s.length(); ++i) {
+            if (s.charAt(i) == s.charAt(i - 1)) {
+                ++cnt;
+                ans = Math.max(ans, cnt);
+            } else {
+                cnt = 1;
+            }
+        }
+        return ans;
+    }
+
+    public int numberOfArithmeticSlices(int[] nums) {
+        int length = nums.length;
+        if (length == 1) {
+            return 0;
+        }
+        int d = nums[0] - nums[1], t = 0, ans = 0;
+        for (int i = 2; i < length; ++i) {
+            if (nums[i - 1] - nums[i] == d) {
+                t++;
+            } else {
+                d = nums[i - 1] - nums[i];
+                t = 0;
+            }
+            ans += t;
+        }
+        return ans;
+    }
+
+    public int maxArea(int[] height) {
+        int len = height.length;
+        int left = 0;
+        int right = len - 1;
+        int max = 0;
+        while (left < right) {
+            max = Math.max(Math.min(height[left], height[right]) * (right - left), max);
+            if (height[left] < height[right]) {
+                left++;
+            } else {
+                right--;
+            }
+        }
+        return max;
+    }
+
+    public String[] findRelativeRanks(int[] score) {
+        int n = score.length;
+        String[] desc = new String[]{"Gold Medal", "Silver Medal", "Bronze Medal"};
+        int[][] arr = new int[n][n];
+        for (int i = 0; i < n; ++i) {
+            arr[i][0] = score[i];
+            arr[i][1] = i;
+        }
+        String[] res = new String[n];
+        Arrays.sort(arr, (a, b) -> b[0] - a[0]);
+        for (int j = 0; j < n; ++j) {
+            if (j > 3) {
+                res[arr[j][0]] = String.valueOf(Integer.valueOf(arr[j][1]) + 1);
+            } else {
+                res[arr[j][0]] = desc[arr[j][1]];
+            }
+        }
+        return res;
+    }
+
+    public int largestSumAfterKNegations(int[] nums, int k) {
+        Arrays.sort(nums);
+        int sum = 0;
+        for (int i = 0; i < nums.length; ++i) {
+            if (k > 0) {
+                if (nums[i] < 0) {
+                    nums[i] = -nums[i];
+                    k--;
+                } else if (nums[i] == 0) {
+                    k = 0;
+                } else {
+                    if (k % 2 != 0) {
+                        if (i > 0 && nums[i] > nums[i - 1]) {
+                            nums[i - 1] = -nums[i - 1];
+                        } else {
+                            nums[i] = -nums[i];
+                        }
+
+                    }
+                    k = 0;
+                }
+            }
+        }
+        if (k > 0 && k % 2 != 0) {
+            nums[nums.length - 1] = -nums[nums.length - 1];
+        }
+        sum = Arrays.stream(nums).sum();
+        return sum;
+    }
+
+    public int[][] colorBorder(int[][] grid, int row, int col, int color) {
+        int m = grid.length, n = grid[0].length;
+        boolean[][] visited = new boolean[m][n];
+        List<int[]> borders = new ArrayList<>();
+        int originalColor = grid[row][col];
+        visited[row][col] = true;
+        dfs(grid, row, col, visited, borders, originalColor);
+        for (int i = 0; i < borders.size(); i++) {
+            int x = borders.get(i)[0], y = borders.get(i)[1];
+            grid[x][y] = color;
+        }
+        return grid;
+    }
+
+    private void dfs(int[][] grid, int x, int y, boolean[][] visited, List<int[]> borders, int originalColor) {
+        int m = grid.length, n = grid[0].length;
+        boolean isBorder = false;
+        int[][] direc = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
+        for (int i = 0; i < 4; i++) {
+            int nx = direc[i][0] + x, ny = direc[i][1] + y;
+            if (!(nx >= 0 && nx < m && ny >= 0 && ny < n && grid[nx][ny] == originalColor)) {
+                isBorder = true;
+            } else if (!visited[nx][ny]) {
+                visited[nx][ny] = true;
+                dfs(grid, nx, ny, visited, borders, originalColor);
+            }
+        }
+        if (isBorder) {
+            borders.add(new int[]{x, y});
+        }
+    }
+
+    public int getNext(int n) {
+        int sum = 0;
+        while (n > 0) {
+            int nn = n % 10;
+            n = n / 10;
+            sum += nn * nn;
+        }
+        return sum;
+    }
+
+    public boolean isHappy(int n) {
+        Set<Integer> se = new HashSet<>();
+        while (n != 1 && !se.contains(n)) {
+            se.add(n);
+            n = getNext(n);
+        }
+        return n == 1;
+    }
+
+    public int lengthOfLIS(int[] nums) {
+        int len = nums.length;
+        int[] res = new int[len];
+        Arrays.fill(res, 1);
+        for (int i = 0; i < len; ++i) {
+            for (int j = 0; j < i; ++j) {
+                if (nums[i] > nums[j]) {
+                    res[i] = Math.max(res[i], res[j] + 1);
+                }
+            }
+        }
+        int re = 0;
+        for (int ree : res) {
+            re = Math.max(re, ree);
+        }
+        return re;
     }
 
     public boolean isSubsequence(String s, String t) {
@@ -350,6 +645,7 @@ class DemoApplicationTests {
         return nums;
     }
 
+
     public boolean backspaceCompare(String s, String t) {
         int i = s.length() - 1, j = t.length() - 1;
         int skipS = 0, skipT = 0;
@@ -409,6 +705,153 @@ class DemoApplicationTests {
         dfs(cur + 1, nums);
         t.remove(t.size() - 1);
         dfs(cur + 1, nums);
+    }
+
+    List<List<Integer>> ree = new ArrayList<>();
+    List<Integer> tt = new ArrayList<>();
+
+    public List<List<Integer>> subsetsWithDup(int[] nums) {
+        Arrays.sort(nums);
+        dddfs(false, 0, nums);
+        return ree;
+    }
+
+    public void dddfs(boolean x, int cur, int[] nums) {
+        if (cur == nums.length) {
+            ree.add(new ArrayList<>(tt));
+            return;
+        }
+
+        dddfs(false, cur + 1, nums);
+        if (!x && cur > 0 && nums[cur - 1] == nums[cur]) {
+            return;
+        }
+        tt.add(nums[cur]);
+        dddfs(true, cur + 1, nums);
+        tt.remove(tt.size() - 1);
+
+    }
+
+    public boolean validTicTacToe(String[] board) {
+        int x = 0, y = 0;
+        for (String str : board) {
+            char[] ch = str.toCharArray();
+            for (char c : ch) {
+                x = (c == 'X') ? x + 1 : x;
+                y = (c == 'O') ? y + 1 : y;
+            }
+        }
+        if (x != y && x != y + 1) {
+            return false;
+        }
+        if (win(board, 'X') && x != y + 1) {
+            return false;
+        }
+        if (win(board, 'O') && x != y) {
+            return false;
+        }
+        return true;
+    }
+
+    public boolean win(String[] board, char p) {
+        for (int i = 0; i < 3; ++i) {
+            if (p == board[0].charAt(i) && p == board[1].charAt(i) && p == board[2].charAt(i)) {
+                return true;
+            }
+            if (p == board[i].charAt(0) && p == board[i].charAt(1) && p == board[i].charAt(2)) {
+                return true;
+            }
+        }
+        if (p == board[0].charAt(0) && p == board[1].charAt(1) && p == board[2].charAt(2)) {
+            return true;
+        }
+        if (p == board[0].charAt(2) && p == board[1].charAt(1) && p == board[2].charAt(0)) {
+            return true;
+        }
+        return false;
+    }
+
+    public String shortestCompletingWord(String licensePlate, String[] words) {
+        int[] count = new int[26];
+        for (int j = 0; j < licensePlate.length(); ++j) {
+            char ch = licensePlate.charAt(j);
+            if (Character.isLetter(ch)) {
+                ++count[Character.toLowerCase(ch) - 'a'];
+            }
+        }
+        int idx = -1;
+        for (int i = 0; i < words.length; ++i) {
+            int[] c = new int[26];
+            for (int j = 0; j < words[i].length(); ++j) {
+                char ch = words[i].charAt(j);
+                ++c[ch - 'a'];
+            }
+            boolean ok = true;
+            for (int j = 0; j < 26; ++j) {
+                if (c[j] < count[j]) {
+                    ok = false;
+                    break;
+                }
+            }
+            if (ok && (idx < 0 || words[i].length() < words[idx].length())) {
+                idx = i;
+            }
+        }
+        return words[idx];
+    }
+
+    public int maxIncreaseKeepingSkyline(int[][] grid) {
+        int m = grid.length;
+        int n = grid[0].length;
+        int[] mm = new int[m];
+        int[] nn = new int[n];
+        int res = 0;
+        for (int i = 0; i < m; ++i) {
+            for (int j = 0; j < n; ++j) {
+                mm[i] = Math.max(grid[i][j], mm[i]);
+                nn[j] = Math.max(grid[i][j], nn[j]);
+            }
+        }
+        for (int i = 0; i < m; ++i) {
+            for (int j = 0; j < n; ++j) {
+                int count = Math.min(mm[i], nn[j]);
+                int count1 = grid[i][j];
+                if (count1 < count) {
+                    res += count - count1;
+                }
+            }
+        }
+        return res;
+    }
+
+    public int reverse(int x) {
+        int res = 0;
+        while (x != 0) {
+            if (res < Integer.MIN_VALUE / 10 || res > Integer.MAX_VALUE / 10) {
+                return 0;
+            }
+            int dight = x % 10;
+            x /= 10;
+            res = res * 10 + dight;
+        }
+        return res;
+    }
+
+    public int searchInsert(int[] nums, int target) {
+        int left = 0;
+        int right = nums.length - 1;
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+            int num = nums[mid];
+            if (num == target) {
+                return mid;
+            } else if (num < target) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+        return left;
     }
 
     public boolean buddyStrings(String s, String goal) {
@@ -837,20 +1280,6 @@ class DemoApplicationTests {
         dfsCom(cur + 1, n, k);
     }
 
-    public int searchInsert(int[] nums, int target) {
-        int left = 0, right = nums.length - 1;
-        while (left <= right) {
-            int mid = (right + left) / 2;
-            if (nums[mid] < target) {
-                left = mid + 1;
-            } else if (nums[mid] > target) {
-                right = mid - 1;
-            } else {
-                return mid;
-            }
-        }
-        return left;
-    }
 
     public int combinationSum4(int[] nums, int target) {
         int len = nums.length;
@@ -873,6 +1302,50 @@ class DemoApplicationTests {
         for (int v : arr) {
             dp.put(v, dp.getOrDefault(v - difference, 0) + 1);
             ans = Math.max(ans, dp.get(v));
+        }
+        return ans;
+    }
+
+    public void moveZeroes(int[] nums) {
+        int len = nums.length;
+        int left = 0;
+        for (int i = 0; i < len; ++i) {
+            if (nums[i] == 0) {
+                left = i + 1;
+                while (left < len - 1 && nums[left] == 0) {
+                    left++;
+                }
+                int tmp = nums[i];
+                nums[i] = nums[left];
+                nums[left] = tmp;
+            }
+        }
+    }
+
+    public int numWaterBottles(int numBottles, int numExchange) {
+        int res = numBottles;
+        int count = 1;
+        int yu = 0;
+        while (count != 0) {
+            count = numBottles / numExchange;
+            yu = numBottles % numExchange;
+            res += count;
+            numBottles = count + yu;
+        }
+        return res;
+    }
+
+    public int findRadius(int[] houses, int[] heaters) {
+        Arrays.sort(houses);
+        Arrays.sort(heaters);
+        int ans = 0;
+        for (int i = 0, j = 0; i < houses.length; i++) {
+            int curDistance = Math.abs(houses[i] - heaters[j]);
+            while (j < heaters.length - 1 && Math.abs(houses[i] - heaters[j]) >= Math.abs(houses[i] - heaters[j + 1])) {
+                j++;
+                curDistance = Math.min(curDistance, Math.abs(houses[i] - heaters[j]));
+            }
+            ans = Math.max(ans, curDistance);
         }
         return ans;
     }
@@ -919,21 +1392,6 @@ class DemoApplicationTests {
         return str.toString();
     }
 
-    public void moveZeroes(int[] nums) {
-        int left = 0;
-        int len = nums.length;
-        for (int i = 0; i < len - 1; ++i) {
-            if (nums[i] == 0) {
-                left = i + 1;
-                while (left < len - 1 && nums[left] == 0) {
-                    left++;
-                }
-                int dmp = nums[i];
-                nums[i] = nums[left];
-                nums[left] = dmp;
-            }
-        }
-    }
 
     public int[] twoSum(int[] numbers, int target) {
         int len = numbers.length;

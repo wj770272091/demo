@@ -16,6 +16,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
  */
 public class MsTest {
 
+
     /**
      * 栈模拟队列
      */
@@ -111,6 +112,33 @@ public class MsTest {
             }
         }
         return dp[0][len - 1];
+    }
+
+    public String truncateSentence(String s, int k) {
+        String[] arr = s.split(" ");
+        StringBuilder str = new StringBuilder();
+        for (int i = 0; i < k; ++i) {
+            if (i == k - 1) {
+                str.append(arr[i]);
+            } else {
+                str.append(arr[i] + " ");
+            }
+
+        }
+        return str.toString();
+    }
+
+    public int integerBreak(int n) {
+        int[] dp = new int[n + 1];
+        dp[0] = dp[1] = 0;
+        for (int i = 2; i <= n; ++i) {
+            int max = 0;
+            for (int j = 1; j < i; ++j) {
+                max = Math.max(max,Math.max(j * (i - j), j * dp[i - j]));
+            }
+            dp[i]=max;
+        }
+        return dp[n];
     }
 
     public int compareVersion(String version1, String version2) {

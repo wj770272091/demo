@@ -1,10 +1,8 @@
 package com.example.demo;
 
-import com.alibaba.fastjson.JSONArray;
 import com.example.demo.controller.enumTest;
 
 import java.lang.reflect.Constructor;
-import java.util.*;
 
 /**
  * @NAME: StudyAbroadProcess
@@ -12,7 +10,7 @@ import java.util.*;
  * @DATE: 2020/10/23
  * @TIME: 16:40
  */
-public class JSTest {
+public class JSTest  {
     private static volatile Constructor<enumTest> aa;
 
     public static void main(String[] args) {
