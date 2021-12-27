@@ -1,5 +1,6 @@
 package com.example.demo;
 
+
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -10,7 +11,7 @@ import java.util.*;
 class DemoApplicationTests {
 
     @Test
-    void contextLoads() {
+    public void contextLoads() {
 //        File file=new File("E:\\360MoveData\\Users\\77027\\Documents\\Tencent Files\\770272091\\FileRecv\\_______o5iltc.html");
 //        new ParseFile().readHtml(file);
 //        String str="<div xmlns=\"\" id=\"idm576458645-container\" style=\"margin: 0 0 45px 0;\" class=\"section-wrapper\"><div class=\"clear\"></div></div>";
@@ -49,6 +50,8 @@ class DemoApplicationTests {
 //
 //        System.out.println("结束:" + new Date().getTime());
         subsets(new int[]{1, 2, 3});
+        int aa = 6 / 2 * (1 + 2);
+        System.out.println(aa);
     }
 
     public int distributeCandies(int[] candyType) {
@@ -115,6 +118,61 @@ class DemoApplicationTests {
         map.put("9", "wxyz");
         dddddd(list, 0, digits, map, new StringBuffer());
         return list;
+    }
+
+    public String[] findOcurrences(String text, String first, String second) {
+        String[] te = text.split(" ");
+        boolean firstB = false;
+        boolean secondB = false;
+        String res = "";
+        for (int i = 0; i < te.length; ++i) {
+            String str = te[i];
+            boolean f = str.equals(first);
+            if (!firstB) {
+                if (f) {
+                    firstB = true;
+                }
+            } else if (!secondB) {
+                if (str.equals(second)) {
+                    secondB = true;
+                    continue;
+                } else if (!f) {
+                    firstB = false;
+                }
+            }
+            if (secondB) {
+                res += str + " ";
+                if (!f) {
+                    firstB = false;
+                }
+                if (first != second) {
+                    secondB = false;
+                }
+            }
+        }
+        if (res == "") {
+            return new String[0];
+        }
+        return res.split(" ");
+    }
+
+    public int numFriendRequests(int[] ages) {
+        int n = ages.length;
+        Arrays.sort(ages);
+        int left = 0, right = 0, ans = 0;
+        for (int age : ages) {
+            if (age < 15) {
+                continue;
+            }
+            while (ages[left] <= 0.5 * age + 7) {
+                ++left;
+            }
+            while (right + 1 < n && ages[right + 1] <= age) {
+                ++right;
+            }
+            ans += right - left;
+        }
+        return ans;
     }
 
     public int dayOfYear(String date) {
