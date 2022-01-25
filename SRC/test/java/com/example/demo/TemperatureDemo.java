@@ -105,7 +105,7 @@ public class TemperatureDemo {
 //            System.exit(1);
 //        }
 //        System.exit(0);
-    new DemoApplicationTests().checkInclusion("abc","ccccbbbbaaaa");
+    new DemoApplicationTests().checkInclusion("ab","eidbaooo");
     }
 
 }
