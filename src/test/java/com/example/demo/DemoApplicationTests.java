@@ -2,9 +2,14 @@ package com.example.demo;
 
 
 import org.junit.jupiter.api.Test;
+import org.openjdk.jmh.runner.Runner;
+import org.openjdk.jmh.runner.RunnerException;
+import org.openjdk.jmh.runner.options.Options;
+import org.openjdk.jmh.runner.options.OptionsBuilder;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 
 @SpringBootApplication
@@ -49,7 +54,128 @@ public class DemoApplicationTests {
 //        }
 //
 //        System.out.println("结束:" + new Date().getTime());
-        isAdditiveNumber("199100199");
+//        isAdditiveNumber("199100199");
+        Options opt = new OptionsBuilder()
+                .include(LinkedListIterationBenchMark.class.getSimpleName())
+                .forks(1)
+                .warmupIterations(2)
+                .measurementIterations(2)
+                .output("E:/Benchmark.log")
+                .build();
+
+        try {
+            new Runner(opt).run();
+        } catch (RunnerException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public List<String> simplifiedFractions(int n) {
+        List<String> res = new ArrayList<>();
+        for (int i = 2; i <= n; ++i) {
+            for (int j = 1; j < i; ++j) {
+                if (gcd(j, i) == 1) {
+                    res.add(j + "/" + i);
+                }
+            }
+        }
+        return res;
+    }
+
+    public int numWays(int n) {
+        if (n < 2) {
+            return 1;
+        }
+        int[] dp = new int[n + 1];
+        dp[0] = 1;
+        dp[1] = 1;
+        for (int i = 2; i <= n; ++i) {
+            dp[i] = (dp[i - 1] + dp[i - 2]) % 1000000007;
+        }
+        return dp[n];
+    }
+
+    public String[] findRestaurant(String[] list1, String[] list2) {
+        HashMap<String, Integer> setR = new HashMap<>();
+        for (int i = 0; i < list1.length; ++i) {
+            setR.put(list1[i], i);
+        }
+        List<String> re = new ArrayList<>();
+        int minIndexSum = -1;
+        for (int j = 0; j < list2.length; ++j) {
+            if (setR.containsKey(list2[j])) {
+                int nn = j + setR.get(list2[j]);
+                if (minIndexSum == -1) {
+                    minIndexSum = nn;
+                }
+                if (nn < minIndexSum) {
+                    minIndexSum = nn;
+                    re.clear();
+                }
+                if (nn == minIndexSum) {
+                    re.add(list2[j]);
+                }
+
+            }
+
+        }
+        return re.toArray(new String[re.size()]);
+    }
+
+    int[] nums;
+    int orVal, cut;
+
+    public int countMaxOrSubsets(int[] nums) {
+        this.nums = nums;
+        this.orVal = 0;
+        this.cut = 0;
+        dddd(0, 0);
+        return cut;
+    }
+
+    public void dddd(int cc, int maxN) {
+        if (cc == nums.length) {
+            if (maxN > orVal) {
+                orVal = maxN;
+                cut = 1;
+            } else if (maxN == orVal) {
+                cut++;
+            }
+            return;
+        }
+        dddd(cc + 1, maxN | nums[cc]);
+        dddd(cc + 1, maxN);
+    }
+
+    public List<List<Integer>> subsets(int[] nums) {
+        List<List<Integer>> result = new LinkedList<>();
+        helper(nums, 0, new LinkedList<>(), result);
+        return result;
+    }
+
+    public void helper(int[] nums, int index, List<Integer> subList, List<List<Integer>> result) {
+        if (index == nums.length) {
+            result.add(new LinkedList<>(subList));
+        }else {
+            helper(nums,index+1,subList,result);
+            subList.add(nums[index]);
+            helper(nums,index+1,subList,result);
+            subList.remove(subList.size()-1);
+        }
+    }
+
+    public int gcd(int a, int b) {
+        return b != 0 ? gcd(b, a % b) : a;
+    }
+
+    public int minimumDifference(int[] nums, int k) {
+        int len = nums.length;
+        Arrays.sort(nums);
+        int res = Integer.MAX_VALUE;
+        for (int i = 0; i <= len - k; ++i) {
+            res = Math.min(res, nums[i + k - 1] - nums[i]);
+        }
+        return res;
     }
 
     public int countQuadruplets(int[] nums) {
@@ -1024,19 +1150,6 @@ public class DemoApplicationTests {
         return left + right + node.val;
     }
 
-    int[] nums;
-    int[] original;
-
-    public void Solution(int[] nums) {
-        this.nums = nums;
-        this.original = new int[nums.length];
-        System.arraycopy(nums, 0, original, 0, nums.length);
-    }
-
-    public int[] reset() {
-        System.arraycopy(original, 0, nums, 0, nums.length);
-        return nums;
-    }
 
     public int[] shuffle() {
         int[] shuffled = new int[nums.length];
@@ -1308,25 +1421,6 @@ public class DemoApplicationTests {
         return res;
     }
 
-
-    List<Integer> t = new ArrayList<Integer>();
-    List<List<Integer>> ans = new ArrayList<List<Integer>>();
-
-    public List<List<Integer>> subsets(int[] nums) {
-        dfs(0, nums);
-        return ans;
-    }
-
-    public void dfs(int cur, int[] nums) {
-        if (cur == nums.length) {
-            ans.add(new ArrayList<Integer>(t));
-            return;
-        }
-        t.add(nums[cur]);
-        dfs(cur + 1, nums);
-        t.remove(t.size() - 1);
-        dfs(cur + 1, nums);
-    }
 
     List<List<Integer>> ree = new ArrayList<>();
     List<Integer> tt = new ArrayList<>();
@@ -2073,7 +2167,280 @@ public class DemoApplicationTests {
         return res;
     }
 
+    public int minFlipsMonoIncr(String s) {
+        int len = s.length();
+        if (len == 0) {
+            return 0;
+        }
+        int[] f = new int[len];
+        int[] q = new int[len];
+        if (s.charAt(0) == '0') {
+            f[0] = 0;
+            q[0] = 1;
+        } else {
+            f[0] = 1;
+            q[0] = 0;
+        }
+        for (int i = 1; i < len; ++i) {
+            f[i] = f[i - 1] + s.charAt(i) == '0' ? 0 : 1;
+            q[i] = Math.min(f[i - 1], q[i - 1]) + s.charAt(i) == '1' ? 0 : 1;
+        }
+        return Math.min(f[len - 1], q[len - 1]);
+    }
 
+    public int lenLongestFibSubseq(int[] arr) {
+        int len = arr.length;
+        HashMap<Integer, Integer> map = new HashMap<>();
+        for (int i = 0; i < len; ++i) {
+            map.put(arr[i], i);
+        }
+        int res = 2;
+        int[][] dp = new int[len][len];
+        for (int i = 1; i < len; ++i) {
+            for (int j = 0; j < i; ++j) {
+                int aa = arr[i] - arr[j];
+                int index = map.getOrDefault(aa, -1);
+                dp[i][j] = index > 0 && index < j ? dp[j][index] + 1 : 2;
+                res = Math.max(dp[i][j], res);
+            }
+        }
+        return res > 2 ? res : 0;
+    }
+
+    public int countValidWords(String sentence) {
+        int res = 0;
+        String[] ch = sentence.split(" ");
+        for (String c : ch) {
+            Pattern p = Pattern.compile("[a-z]*([a-z]-[a-z])?[a-z]*[!,.]?");
+            if (p.matcher(c).matches()) {
+                res++;
+            }
+        }
+        return res;
+    }
+
+    public int minimumTotal(List<List<Integer>> triangle) {
+        int len = triangle.size();
+        int[][] dp = new int[len][len];
+        for (int i = 0; i < len; ++i) {
+            for (int j = 0; j <= i; ++j) {
+                dp[i][j] = triangle.get(i).get(j);
+                if (i > 0 && j == 0) {
+                    dp[i][j] += dp[i - 1][j];
+                } else if (i > 0 && i == j) {
+                    dp[i][j] += dp[i - 1][j - 1];
+                } else if (i > 0) {
+                    dp[i][j] += Math.min(dp[i - 1][j], dp[i - 1][j - 1]);
+                }
+            }
+        }
+        int res = Integer.MAX_VALUE;
+        for (int aa : dp[len - 1]) {
+            res = Math.min(res, aa);
+        }
+        return res;
+    }
+
+    public int findTargetSumWays(int[] nums, int target) {
+        int sum = 0;
+        int len = nums.length;
+        for (int num : nums) {
+            sum += num;
+        }
+        if (sum < target || (sum + target) % 2 == 1) {
+            return 0;
+        }
+        int diff = (sum + target) / 2;
+        int[][] dp = new int[len + 1][diff + 1];
+        dp[0][0] = 1;
+
+        for (int i = 1; i <= len; ++i) {
+            for (int j = 0; j <= diff; ++j) {
+                dp[i][j] = dp[i - 1][j];
+                if (j >= nums[i - 1]) {
+                    dp[i][j] += dp[i - 1][j - nums[i - 1]];
+                }
+            }
+        }
+        return dp[len][diff];
+    }
+
+    public int numberOfWeakCharacters(int[][] properties) {
+        Arrays.sort(properties, new Comparator<int[]>() {
+            @Override
+            public int compare(int[] o1, int[] o2) {
+                return o1[0] == o2[0] ? o1[1] - o2[1] : o2[0] - o1[0];
+            }
+        });
+        int maxV = 0;
+        int res = 0;
+        for (int[] pp : properties) {
+            if (pp[1] < maxV) {
+                res++;
+            } else {
+                maxV = pp[1];
+            }
+        }
+        return res;
+    }
+
+    public String longestDiverseString(int a, int b, int c) {
+        StringBuilder res = new StringBuilder();
+        Pair[] pair = {new Pair(a, 'a'), new Pair(b, 'b'), new Pair(c, 'c')};
+        while (true) {
+            Arrays.sort(pair, (p1, p2) -> p2.feq - p1.feq);
+            boolean hasnext = false;
+            for (Pair pp : pair) {
+                if (pp.feq <= 0) {
+                    break;
+                }
+                int m = res.length();
+                if (m >= 2 && pp.ch == res.charAt(m - 2) && res.charAt(m - 1) == pp.ch) {
+                    continue;
+                }
+                hasnext = true;
+                res.append(pp.ch);
+                pp.feq--;
+                break;
+            }
+            if (!hasnext) {
+                break;
+            }
+        }
+        return res.toString();
+    }
+
+    class Pair {
+        int feq;
+        char ch;
+
+        public Pair(int aa, char bb) {
+            this.feq = aa;
+            this.ch = bb;
+        }
+    }
+
+    public int longestIncreasingPath(int[][] matrix) {
+        int m = matrix.length;
+        int n = matrix[0].length;
+        if (m == 0 && n == 0) {
+            return 0;
+        }
+        int[][] mm = new int[m][n];
+        int len = 0;
+        for (int i = 0; i < m; ++i) {
+            for (int j = 0; j < n; ++j) {
+                int length = dfs(matrix, mm, i, j);
+                len = Math.max(len, length);
+            }
+        }
+        return len;
+    }
+
+    public int dfs(int[][] matrix, int[][] mm, int i, int j) {
+        if (mm[i][j] != 0) {
+            return mm[i][j];
+        }
+        int mL = matrix.length;
+        int nL = matrix[0].length;
+        int le = 0;
+        int[][] dd = new int[][]{{-1, 0}, {1, 0}, {0, 1}, {0, -1}};
+        for (int[] aa : dd) {
+            int m = i + aa[0];
+            int n = j + aa[1];
+            if (m < mL && m > 0 && n < nL && n > 0 && matrix[i][j] < matrix[m][n]) {
+                int len = dfs(matrix, mm, m, n);
+                le = Math.max(le, len + 1);
+            }
+        }
+        mm[i][j] = le;
+        return le;
+    }
+
+    public int uniquePaths(int m, int n) {
+        int[][] dp = new int[m][n];
+        Arrays.fill(dp[0], 1);
+        for (int i = 1; i < m; ++i) {
+            dp[i][0] = 1;
+        }
+        for (int i = 1; i < m; ++i) {
+            for (int j = 1; j < n; ++j) {
+                dp[i][j] = dp[i - 1][j] + dp[i][j - 1];
+            }
+        }
+        return dp[m - 1][n - 1];
+    }
+
+    public int minCost(int[][] costs) {
+        int len = costs.length;
+        if (len == 0) {
+            return 0;
+        }
+        int[][] dp = new int[3][2];
+        for (int j = 0; j < 3; ++j) {
+            dp[j][0] = costs[0][j];
+        }
+        for (int i = 1; i < len; ++i) {
+            for (int j = 0; j < 3; ++j) {
+                int prev1 = dp[(j + 2) % 3][(i - 1) % 2];
+                int prev2 = dp[(j + 1) % 3][(i - 1) % 2];
+                dp[j][i % 2] = Math.min(prev1, prev2) + costs[i][j];
+            }
+        }
+        int last = (len - 1) % 2;
+        return Math.min(dp[0][last], Math.min(dp[1][last], dp[2][last]));
+    }
+
+    public int rob(int[] nums) {
+        int len = nums.length;
+        if (len == 0) {
+            return 0;
+        }
+        int[] cou = new int[2];
+        cou[0] = nums[0];
+        if (len > 1) {
+            cou[1] = Math.max(nums[0], nums[1]);
+        }
+        for (int i = 2; i < len; ++i) {
+            cou[i % 2] = Math.max(cou[(i - 1) % 2], cou[(i - 2) % 2] + nums[i]);
+        }
+        return cou[(len - 1) % 2];
+    }
+
+    public int minCostClimbingStairs(int[] cost) {
+        int len = cost.length;
+        int[] re = new int[len];
+        re[0] = cost[0];
+        re[1] = cost[1];
+        for (int i = 2; i < len; ++i) {
+            re[i] = Math.min(re[i - 1], re[i - 2]) + cost[i];
+        }
+        return Math.min(re[len - 1], re[len - 2]);
+    }
+
+    public List<String> restoreIpAddresses(String s) {
+        List<String> res = new LinkedList<>();
+        helper(0, 0, s, "", "", res);
+        return res;
+    }
+
+    public void helper(int i, int seg, String s, String seq, String ip, List<String> res) {
+        if (i == s.length() && seg == 3 && isV(seq)) {
+            res.add(ip + seq);
+        } else if (seg <= 3 && i < s.length()) {
+            char ch = s.charAt(i);
+            if (isV(seq + ch)) {
+                helper(i + 1, seg, s, seq + ch, ip, res);
+            }
+            if (seq.length() > 0 && seg < 3) {
+                helper(i + 1, seg + 1, s, "" + ch, ip + seq + ".", res);
+            }
+        }
+    }
+
+    public boolean isV(String ss) {
+        return Integer.valueOf(ss) <= 255 && (ss.equals("0") || ss.charAt(0) != '0');
+    }
 
     public ListNode sortList(ListNode head) {
         if (head == null || head.next == null) {
